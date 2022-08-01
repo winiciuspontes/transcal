@@ -1,5 +1,6 @@
 
 #importanto as bibliotecas necessárias
+#from tkinter.tix import Tree
 import sympy  as sp
 import numpy as np 
 import pandas as pd 
@@ -11,7 +12,7 @@ from sympy import beta
 
 
 #Todos os simbólicos usados
-x, y, z, phi, T, T_max, T1, T2, T4,T_mr,delta_T_phi,delta_T_zp,delta_T_zs, delta,P,  P1, P2, P3, A_ref, A_h_eff, phi_ZP, theta, q_ref, A_h_reff, delta_P_3_4, R, m_ponto_3, T3, k, D_ref, phi_global, m_ponto_zp, phi_pobre, phi_rico,A_ft, D_ref, L_cc, L_zp, L_zs, L_zd,L_sz,L_zr, L_dz,  phi_Zs, m_ponto_arref, m_ponto_zd, eta_zr, eta_zp, eta_zs, p_3,T_med_zr, T_max_zr, delta_p, psi_t3, m_ponto_comb,V_zs, teste, T_saida_zp, T_saida_zs, T_saida_zd, mg_ponto_zr, mg_ponto_zp, mg_ponto_zs, m_ponto_zs, rho_an,u_an,rho_g, u_g, m_ponto_fenda, A_fenda, m_ponto_g, mi_ar, mi_g, T_g,  eta_r,D_ft, m_ponto_fenda_zp, m_ponto_fenda_zp, m_ponto_fenda_zs, m_ponto_fenda_zd,mi, beta  = sp.symbols(
+x, y, z, phi, T, T_max, T1, T2, T4,T_mr,delta_T_phi,delta_T_zp,delta_T_zs, delta,P,  P1, P2, P3, A_ref, A_h_eff, phi_ZP, theta, q_ref, A_h_reff, delta_P_3_4, R, m_ponto_3, T3, k, D_ref, phi_global, m_ponto_zp, phi_pobre, phi_rico,A_ft, D_ref, L_cc, L_zp, L_zs, L_zd,L_sz,L_zr, L_dz,  phi_Zs, m_ponto_arref, m_ponto_zd, eta_zr, eta_zp, eta_zs, p_3,T_med_zr, T_max_zr, delta_p, psi_t3, m_ponto_comb,V_zs, teste, T_saida_zp, T_saida_zs, T_saida_zd, mg_ponto_zr, mg_ponto_zp, mg_ponto_zs, m_ponto_zs, rho_an,u_an,rho_g, u_g, m_ponto_fenda, A_fenda, m_ponto_g, mi_ar, mi_g, T_g,  eta_r,D_ft, m_ponto_fenda_zp, m_ponto_fenda_zp, m_ponto_fenda_zs, m_ponto_fenda_zd,mi, beta,N_h_i_ext,N_h_i_int  = sp.symbols(
     [
     'x','y','z', 'phi', 'T', 'T_max', 'T1', 'T2', 'T4', 'T_mr', 'delta_T_phi', 'delta_T_zp','delta_T_zs', 'delta','P', 'P1',
     'P2', 'P3', 'A_ref', 'A_h_eff', 'phi_ZP', 'theta', 'q_ref', 'A_h_reff', 
@@ -20,7 +21,7 @@ x, y, z, phi, T, T_max, T1, T2, T4,T_mr,delta_T_phi,delta_T_zp,delta_T_zs, delta
     'phi_Zs','m_ponto_arref', 'm_ponto_zd','eta_zr','eta_zp','eta_zs', 'p_3', 'T_med_zr', 
     'T_max_zr','delta_p', 'psi_t3', 'm_ponto_comb', 'V_zs', 'teste', 'T_saida_zp', 
     'T_saida_zs', 'T_saida_zd', 'mg_ponto_zr', 'mg_ponto_zp', 'mg_ponto_zs', 'm_ponto_zs', 
-    'rho_an','u_an','rho_g', 'u_g', 'm_ponto_fenda', 'A_fenda','m_ponto_g', 'mi_ar', 'mi_g', 'T_g',  'eta_r', 'D_ft', 'm_ponto_fenda_zp', 'm_ponto_fenda_zd', 'm_ponto_fenda_zs', 'm_ponto_fenda_zd', 'mi', 'beta' 
+    'rho_an','u_an','rho_g', 'u_g', 'm_ponto_fenda', 'A_fenda','m_ponto_g', 'mi_ar', 'mi_g', 'T_g',  'eta_r', 'D_ft', 'm_ponto_fenda_zp', 'm_ponto_fenda_zd', 'm_ponto_fenda_zs', 'm_ponto_fenda_zd', 'mi', 'beta','N_h_i_ext','N_h_i_int'
     ])
 
 
@@ -181,8 +182,9 @@ def t_max_zr(T3, eta_zr, delta_T_phi):
     return t_max_zr
 
 #Equacao 40 ele não estava aceitando os valores como simbolico 
-# variavel_dentro_tanh = 1.5475 * (10**-3) * (T3 + 108 * np.log(p_3) - 1863)
-# eta_zp = 0.92 + (0.12 * mt.tanh(variavel_dentro_tanh))
+def eta_zr(T3,p_3):
+    variavel_dentro_tanh = 1.5475 * (10**-3) * (T3 + 108 * np.log(p_3) - 1863)
+    return (0.92 + (0.12 * mt.tanh(variavel_dentro_tanh)))
 
 
 #Equacao 41
@@ -197,9 +199,10 @@ def t_saida_zp(T3, eta_zs, delta_T_zs):
     T_saida_zs = T3 + (eta_zs * delta_T_zs) 
     return T_saida_zs
 
-#Equacao 43 tem o mesmo problema da equacao 40 
-# variavel_dentro_tanh = 1.5475 * (10**-3) * (T3 + 108 * np.log(p_3) - 1863)
-# eta_zp = 0.92 + (0.12 * mt.tanh(variavel_dentro_tanh))
+#Equacao 43 tem o mesmo problema da equacao 40 ]
+def eta_zp(T3,p_3):
+    variavel_dentro_tanh = 1.5475 * (10**-3) * (T3 + 108 * np.log(p_3) - 1863)
+    return (0.92 + (0.12 * mt.tanh(variavel_dentro_tanh)))
 #Trocar pelo o que é requerido
 
 
@@ -210,8 +213,15 @@ def t_saida_zs(T3, eta_zs, delta_T_zs):
     return T_saida_zs
 
 #Equacao 45 
-#eta_zs = 1/phi_Zs
+def eta_zs_rico(phi_Zs):
+    return 1/phi_Zs
 
+
+#Equacao 46
+
+def eta_zs_pobre(psi_300,phi_Zs,d_ast):
+    0.911*mt.log(psi_300)+8.02*phi_Zs-1.097+d_ast
+    return 1/()
 
 #Equacao 47 
 
@@ -363,6 +373,7 @@ def area_orificio(m_ponto_hi, T3, P3, C_dh, delta_P_h):
 #Equacao 76 é uma somatoria de valores, portanto, acho melhor fazer sem função 
 
 
+
 #Equacao 77 
 
 def k_funcao(delta, mi, beta):
@@ -384,5 +395,57 @@ def d_hi(A_hi, N_hi):
 
 
 #Equacao 80 - é uma relacao de soma, portanto, não vale a pena criar uma função para isso
+#Bruno: Estou implemetando essa func de soma, pois ja vou fazer a verificação da validade de Nh_i_ext e Nh_i_int, assim na rotina precisamos apenas invocar essa func
+def N_h_i(N_h_i_int,N_h_i_ext,D_int, D_ref, D_ft,d_hi):
+    razao_circuferencia = (np.pi*((D_int+D_ref+D_ft))/(2*d_hi))
+    if verifica_N_ext(N_h_i_ext,razao_circuferencia)==True:
+        print("N_ext Ok!")
+    else:
+        print("N_ext maior que a razao de circuferencia")
+    if verifica_N_int(N_h_i_int,razao_circuferencia)==True:
+        print("N_int Ok!")
+    else:
+        print("N_int maior que a razao de circuferencia")
+        
+
+
+#Equacao 81
+def verifica_N_ext(N_h_i_ext,razao_circuferencia):   
+    if N_h_i_ext < razao_circuferencia:
+        return True
+    else:
+        return False
+    
+
+#Equacao 82
+def verifica_N_int(N_h_i_int,razao_circuferencia):
+    if N_h_i_int < razao_circuferencia:
+        return True
+    else:
+        return False
+    
+# Equacao 83 - é uma relacao de soma, portanto, não vale a pena criar uma função para isso
+    
+# Equacao 84
+def A_h_i_ext(A_an_ext,A_ext,A_int,A_h_i):
+    return ((A_an_ext)/(A_ext+A_int))*A_h_i
+
+# Equacao 85
+def A_h_i_ext(A_an_ext,A_an_int,A_h_i):
+    return ((A_an_ext)/(A_an_ext+A_an_int))*A_h_i
+
+# Equacao 86
+def  A_an_ext(D_in,D_ref,D_ft):
+    return (np.pi/4)*(pow((D_in+(2*D_ref)),2)-pow((D_in+D_ref+D_ft),2))
+
+# Equacao 87
+def  A_an_int(D_in,D_ref,D_ft):
+    return (np.pi/4)*(pow((D_in+D_ref-D_ft),2)-pow(D_in,2))
+    
 
 #Terminar até a equacação 87 (Ver com o grupo se vão querer fazer com funções)
+
+if __name__ == "__main__":
+    # Iniciar metodologia
+    print("Iniciando...")
+   
