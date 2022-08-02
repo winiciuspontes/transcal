@@ -11,6 +11,7 @@ from sympy import beta
 
 
 
+
 #Todos os simbólicos usados
 x, y, z, phi, T, T_max, T1, T2, T4,T_mr,delta_T_phi,delta_T_zp,delta_T_zs, delta,P,  P1, P2, P3, A_ref, A_h_eff, phi_ZP, theta, q_ref, A_h_reff, delta_P_3_4, R, m_ponto_3, T3, k, D_ref, phi_global, m_ponto_zp, phi_pobre, phi_rico,A_ft, D_ref, L_cc, L_zp, L_zs, L_zd,L_sz,L_zr, L_dz,  phi_Zs, m_ponto_arref, m_ponto_zd, eta_zr, eta_zp, eta_zs, p_3,T_med_zr, T_max_zr, delta_p, psi_t3, m_ponto_comb,V_zs, teste, T_saida_zp, T_saida_zs, T_saida_zd, mg_ponto_zr, mg_ponto_zp, mg_ponto_zs, m_ponto_zs, rho_an,u_an,rho_g, u_g, m_ponto_fenda, A_fenda, m_ponto_g, mi_ar, mi_g, T_g,  eta_r,D_ft, m_ponto_fenda_zp, m_ponto_fenda_zp, m_ponto_fenda_zs, m_ponto_fenda_zd,mi, beta,N_h_i_ext,N_h_i_int  = sp.symbols(
     [
@@ -97,16 +98,22 @@ def perfil_radial_temp(T_mr, T4, T3):
 
 #Equacao 28 - Obtenção da área de referência pela aerodinâmica 
 
-def area_tranferencia_aerodinamica(k, m_ponto_3m, T3, P3, delta_P_3_4, q_ref):
-    area_transf = k * ( ((m_ponto_3 * (T3**0.5) )/(P3))**2  * ((delta_P_3_4/q_ref)/(delta_P_3_4/P3)) ** 0.5 )
+def area_tranferencia_aerodinamica(k, m_ponto_3, T3, P3):
+    camara_analunar = True
+    if(camara_analunar):
+        razao_delta_P_3_4_q_ref = 20/0.06 # Valor retirado da Tabela 5 
+        area_transf =  ( (k * (((m_ponto_3 * (T3**0.5) )/(P3))**2  * (razao_delta_P_3_4_q_ref)) ) ** 0.5 ) 
     return area_transf
 
 
 #Equacao 29- Obtenção da área de referência pela química 
 
-def area_tranferencia_quimica(P3, A_ref, D_ref, T3, b, m_ponto_3):
-    theta = ((P3**1.75) * A_ref * (D_ref ** 0.75) * np.exp(T3/b))/ m_ponto_3
-    return theta
+def area_tranferencia_quimica(P3, D_ref, T3, b, m_ponto_3, theta):
+    A_ref =  (theta * m_ponto_3) / ((P3**1.75)  * (D_ref ** 0.75) * np.exp(T3/b))
+    return A_ref
+
+
+
 
 
 #Equacao 30 
@@ -120,6 +127,12 @@ def phi_global_function(m_comb_op, m_ponto_3_op, m_comb, m_ponto_3):
     phi_global = (m_comb_op/m_ponto_3_op)/ (m_comb/m_ponto_3)
     return phi_global
 
+
+#Equacao do b, antes da 30
+
+def b_function(phi_ZP):
+    b_calculo = 170 * (2 - np.log(phi_ZP))
+    return b_calculo
 
 #Equacao 32 
 
@@ -142,7 +155,7 @@ def area_ref_trans(A_ref):
 #Tabela 6 
 
 def altura_referencia(A_ref,D_int):
-    D_ref = (np.sqrt([(4*A_ref)/np.pi()]-pow(D_int,2))-D_int)/2
+    D_ref = ((np.sqrt( ((4 * A_ref)/np.pi) + (D_int**2))) - D_int)/2
     return D_ref
 
 def altura_tubo_chama(A_ft,D_int,D_ref):
@@ -441,11 +454,10 @@ def  A_an_ext(D_in,D_ref,D_ft):
 # Equacao 87
 def  A_an_int(D_in,D_ref,D_ft):
     return (np.pi/4)*(pow((D_in+D_ref-D_ft),2)-pow(D_in,2))
-    
 
 #Terminar até a equacação 87 (Ver com o grupo se vão querer fazer com funções)
 
-if __name__ == "__main__":
-    # Iniciar metodologia
-    print("Iniciando...")
+# if __name__ == "__main__":
+#     # Iniciar metodologia
+#     print("Iniciando...")
    
