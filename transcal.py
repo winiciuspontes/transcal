@@ -159,13 +159,13 @@ def altura_referencia(A_ref,D_int):
     return D_ref
 
 def altura_tubo_chama(A_ft,D_int,D_ref):
-    D_ft = (A_ft/(np.pi()*(D_int+D_ref)))
+    D_ft = (A_ft/(np.pi*(D_int+D_ref)))
     return D_ft
 
 
 #Equacao 35 - determinação da área de combustao
 
-def comprimento_camara_combustao():
+def comprimento_camara_combustao(L_zp, L_zs, L_zd):
   L_cc = L_zp + L_zs + L_zd
   return L_cc
 
@@ -177,7 +177,7 @@ def quant_ar_zona_secundaria(phi_global,rico,phi_Zs):
 
 #Equacao 37 
 
-def porcentagem_ar_resfriamento(m_ponto_arref, T3, m_ponto_3):
+def porcentagem_ar_resfriamento(T3, m_ponto_3):
     m_ponto_arref = (0.1*T3 - 30) * m_ponto_3
     return m_ponto_arref
 
@@ -185,19 +185,20 @@ def porcentagem_ar_resfriamento(m_ponto_arref, T3, m_ponto_3):
 #Equacao 38 
 
 def vazao_ar_zona_diluicao(m_ponto_zp, m_ponto_zs, m_ponto_arref, m_ponto_3):
-    m_ponto_zd = (1 - (sum(m_ponto_zp, m_ponto_zs, m_ponto_arref))/m_ponto_3 )
+    m_ponto_zd = (m_ponto_3 - (sum(m_ponto_zp, m_ponto_zs, m_ponto_arref)))
     return m_ponto_zd
 
 
 #Equacao 39 
 def t_max_zr(T3, eta_zr, delta_T_phi):
-    t_max_zr = T3 + eta_zr*delta_T_phi
+    t_max_zr = T3 + (eta_zr *  delta_T_phi)
     return t_max_zr
 
 #Equacao 40 ele não estava aceitando os valores como simbolico 
 def eta_zr(T3,p_3):
     variavel_dentro_tanh = 1.5475 * (10**-3) * (T3 + 108 * np.log(p_3) - 1863)
-    return (0.92 + (0.12 * mt.tanh(variavel_dentro_tanh)))
+    eta_calculo = (0.83 + (0.17 * mt.tanh(variavel_dentro_tanh)))
+    return eta_calculo
 
 
 #Equacao 41
@@ -208,14 +209,15 @@ def t_media_zr(T3, T_max_zr):
 
 #Equacao 42 
 
-def t_saida_zp(T3, eta_zs, delta_T_zs):
-    T_saida_zs = T3 + (eta_zs * delta_T_zs) 
-    return T_saida_zs
+def t_saida_zp(T3, eta_zp, delta_T_zp):
+    T_saida_zp = T3 + (eta_zp * delta_T_zp) 
+    return T_saida_zp
 
-#Equacao 43 tem o mesmo problema da equacao 40 ]
+#Equacao 43 tem o mesmo problema da equacao 40 
 def eta_zp(T3,p_3):
     variavel_dentro_tanh = 1.5475 * (10**-3) * (T3 + 108 * np.log(p_3) - 1863)
-    return (0.92 + (0.12 * mt.tanh(variavel_dentro_tanh)))
+    eta_zp_calculo = (0.92 + (0.12 * mt.tanh(variavel_dentro_tanh)))
+    return eta_zp_calculo
 #Trocar pelo o que é requerido
 
 
@@ -226,7 +228,7 @@ def t_saida_zs(T3, eta_zs, delta_T_zs):
     return T_saida_zs
 
 #Equacao 45 
-def eta_zs_rico(phi_Zs):
+def eta_zs(phi_Zs):
     return 1/phi_Zs
 
 
