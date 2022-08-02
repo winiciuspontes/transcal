@@ -3,7 +3,7 @@ import sympy  as sp
 import numpy as np 
 import pandas as pd 
 import math as mt 
-import matplotlib as plt
+import matplotlib.pyplot as plt
 import transcal as tc
 
 #CONSTANTES UTILIZADAS:
@@ -85,3 +85,14 @@ eta_zs = tc.eta_zs(phi_zs)
 t_saida_zs = tc.t_saida_zs(T3, eta_zs, delta_T_zs)
 
 
+
+
+#Eq. 49 - Calculando o V_zs:
+v_zs = tc.v_zs(a_ft, l_zs)
+
+
+
+#Eq. 48 - Calculando o psi_maiusculo:
+# psi_t3 = tc.phi_t3(phi_zs, m_ponto_comb, v_zs, P3)
+
+# print(psi_t3)

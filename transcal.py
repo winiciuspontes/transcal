@@ -234,9 +234,10 @@ def eta_zs(phi_Zs):
 
 #Equacao 46
 
-def eta_zs_pobre(psi_300,phi_Zs,d_ast):
-    0.911*mt.log(psi_300)+8.02*phi_Zs-1.097+d_ast
-    return 1/()
+def eta_zs_pobre(phi_t3,phi_Zs,d_ast):
+    eta_zs_pobre_calculo = 1/(10**(10**(0.911*mt.log(phi_t3)+8.02*phi_Zs - 1.097+d_ast)))
+    return eta_zs_pobre_calculo
+
 
 #Equacao 47 
 
@@ -248,15 +249,21 @@ def d_ast(delta_p, P3):
 #Equacao 48 
 
 def phi_t3(phi_Zs, m_ponto_comb, V_zs, P):
-    psi_t3 = (10 ** (-3.054 * (phi_Zs **-1.25))) * (T3 ** (1.2327 * (phi_Zs ** -1.205))) * m_ponto_comb/ V_zs * (P**(2*phi_Zs))
+    psi_t3 = (10 ** (-3.054 * (phi_Zs **-1.205))) * (T3 ** (1.2327 * (phi_Zs ** - 1.205))) * m_ponto_comb/ V_zs * (P**(2*phi_Zs))
     return psi_t3
+
+
+#Equacao 48.1:
+def eta_zs_pobre_1(m_ponto_comb,P,phi_Zs, V_zs):
+    eta_zs_pobre_calculo = m_ponto_comb/ V_zs * (P**(2*phi_Zs))
+    return eta_zs_pobre_calculo
 
 
 #Equacao 49 
 
-def V_zs(A_ft, L_sz):
-    V_zs = A_ft * L_sz
-    return V_zs
+def v_zs(A_ft, L_sz):
+    v_zs_calculo = A_ft * L_sz
+    return v_zs_calculo
 
 
 #Tabela 8 - Definicao do Tg - conferir se nao esqueceu nenhum termo
