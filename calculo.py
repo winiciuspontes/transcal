@@ -8,7 +8,8 @@ import transcal as tc
 
 #CONSTANTES UTILIZADAS:
 k = 143.5
-m_ponto_3 = 0.243    
+m_ponto_3 = 0.243
+m_ponto_comb = 0.252 #Tirar dúvida sobre o m_comb (nao sabemos qual é o valor)
 T3 = 498.42 
 P3 = 354.420 * 1000 
 delta_P_3_4 = (354.420 - 333.155) * 1000 
@@ -63,7 +64,6 @@ m_ponto_arref = tc.porcentagem_ar_resfriamento(T3, m_ponto_3) #Eq.37 - Equacao n
 
 #Eq. 40 - calculando o eta
 eta_zr = tc.eta_zr(T3,P3)
-
 #Eq.39 - As eq estavam fora de ordem
 t_max_zr = tc.t_max_zr(T3, eta_zr, delta_T_phi)
 
@@ -74,16 +74,16 @@ t_media_zr = tc.t_media_zr(T3, t_max_zr)
 #Eq.43 - Calculando o eta_zp:
 
 eta_zp = tc.eta_zp(T3, P3)
-
 #Eq.42 - Calculando a Tsaida_zp - Caio trocou a ordem novamente:
 t_saida_zp = tc.t_saida_zp(T3, eta_zp, delta_T_zp)
 
-#Eq.45 - Calculando o Tsaida_zs 
-eta_zs = tc.eta_zs(phi_zs)
+#Eq.45 - Calculando o Tsaida_zs rico
+eta_zs_rico = tc.eta_zs(phi_zs)
+print(eta_zs_rico)
 
-#Eq. 44 - Calculando a Tsaida_zs - Caio trocou a ordem das eq novamente:
-t_saida_zs = tc.t_saida_zs(T3, eta_zs, delta_T_zs)
-
+#Eq. 44 - Calculando a Tsaida_zs rico - Caio trocou a ordem das eq novamente:
+t_saida_zs_rico = tc.t_saida_zs(T3, eta_zs_rico, delta_T_zs)  
+print(t_saida_zs_rico)
 
 
 
@@ -92,7 +92,18 @@ v_zs = tc.v_zs(a_ft, l_zs)
 
 
 
-#Eq. 48 - Calculando o psi_maiusculo:
-# psi_t3 = tc.phi_t3(phi_zs, m_ponto_comb, v_zs, P3)
+# Eq. 48 - Calculando o psi_maiusculo:
+#Vamos calcular o psi_t3 porque o psi_300 é um caso especifico. Perg para o professor
+psi_t3 = tc.phi_t3(phi_zs, m_ponto_comb, v_zs, P3, T3) 
+# psi_300 = tc.phi_t300(m_ponto_comb, P3, phi_zs,  v_zs) 
 
-# print(psi_t3)
+
+#Eq. 47 - Calculando o D*:
+d_asterisco = tc.d_ast(delta_P_3_4,P3)
+
+
+#Eq.46 - Calculando o eta_zs pobre(caio trocou a ordem novamente):
+eta_zs_pobre = tc.eta_zs_pobre(psi_t3, phi_zs, d_asterisco)
+
+#Eq. 44 para Tsaida_zs pobre - Caio trocou a ordem das eq novamente:
+t_saida_zs_pobre= tc.t_saida_zs(T3, eta_zs_pobre, delta_T_zs)  

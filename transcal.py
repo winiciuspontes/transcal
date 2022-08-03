@@ -235,29 +235,27 @@ def eta_zs(phi_Zs):
 #Equacao 46
 
 def eta_zs_pobre(phi_t3,phi_Zs,d_ast):
-    eta_zs_pobre_calculo = 1/(10**(10**(0.911*mt.log(phi_t3)+8.02*phi_Zs - 1.097+d_ast)))
+    eta_zs_pobre_calculo = 1/(10**(10**(0.911*mt.log(phi_t3)+8.02*phi_Zs - 1.097 + d_ast)))
     return eta_zs_pobre_calculo
 
 
 #Equacao 47 
 
 def d_ast(delta_p, P3):
-
     d_ast_calculo = 0.736 - 0.0173 * P3/ delta_p
     return d_ast_calculo
 
 #Equacao 48 
 
-def phi_t3(phi_Zs, m_ponto_comb, V_zs, P):
-    psi_t3 = (10 ** (-3.054 * (phi_Zs **-1.205))) * (T3 ** (1.2327 * (phi_Zs ** - 1.205))) * m_ponto_comb/ V_zs * (P**(2*phi_Zs))
+def phi_t3(phi_Zs, m_ponto_comb, V_zs, P, T3):
+    psi_t3 = (10 ** (-3.054 * (phi_Zs ** -1.205))) * (T3 ** (1.2327 * (phi_Zs ** - 1.205)) ) * (m_ponto_comb/ (V_zs * (P**(2*phi_Zs))) )
     return psi_t3
 
 
 #Equacao 48.1:
-def eta_zs_pobre_1(m_ponto_comb,P,phi_Zs, V_zs):
-    eta_zs_pobre_calculo = m_ponto_comb/ V_zs * (P**(2*phi_Zs))
-    return eta_zs_pobre_calculo
-
+def phi_t300(m_ponto_comb,P,phi_Zs, V_zs):
+    psi_t300_calculo = (m_ponto_comb)/ (V_zs * (P**(2*phi_Zs)))
+    return psi_t300_calculo
 
 #Equacao 49 
 
