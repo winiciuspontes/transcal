@@ -264,7 +264,7 @@ def v_zs(A_ft, L_sz):
     return v_zs_calculo
 
 
-#Tabela 8 - Definicao do Tg - conferir se nao esqueceu nenhum termo
+#Tabela 7 - Definicao do Tg - conferir se nao esqueceu nenhum termo
 
 def tg(T_med_zr, T_saida_zp,T_saida_zs,T_saida_zd, L_zp, L_zr, L_zs, L_dz, x, n_regiao):
         
@@ -272,20 +272,20 @@ def tg(T_med_zr, T_saida_zp,T_saida_zs,T_saida_zd, L_zp, L_zr, L_zs, L_dz, x, n_
         Tg = T_med_zr
 
     elif(n_regiao == 2):
-        Tg = T_med_zr + ((T_saida_zp + T_med_zr)/(L_zp - L_zr) * (x - L_zr))
+        Tg = T_med_zr + ((T_saida_zp - T_med_zr)/(L_zp - L_zr) * (x - L_zr))
 
     elif(n_regiao == 3):
         Tg = T_saida_zp + ((T_saida_zs - T_saida_zp)/L_zs * (x - L_zp))
 
     elif(n_regiao == 4):
-        Tg = T_saida_zp + ((T_saida_zd - T_saida_zs)/ L_dz * (x - L_zp - L_zs))
+        Tg = T_saida_zs + ((T_saida_zd - T_saida_zs)/ L_dz * (x - L_zp - L_zs))
     
     return Tg
 
 
 #Tabela 8 - Definicao da vazao massica dos gases localmente
 
-def mg_ponto(m_ponto_zp, mg_ponto_zr, m_ponto_zs, m_ponto_zd, L_zr, L_zp, L_zs, L_zd, n_regiao_massa):
+def mg_ponto(m_ponto_zp, mg_ponto_zr, m_ponto_zs, mg_ponto_zs, mg_ponto_zp, m_ponto_zd, L_zr, L_zp, L_zs, L_zd, x, n_regiao_massa):
 
 
 
