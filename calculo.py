@@ -35,7 +35,7 @@ delta_T_zs = 1600 - (0.5 * T3)
 
 
 b = tc.b_function(phi_zp) #Eq. antes da 30
-d_ref = 0.039 # Valor obtido da tabela 4
+d_ref = 0.03863 # Valor obtido da tabela 4
 
 # a_ref_aerodinamico = tc.area_tranferencia_aerodinamica(k, m_ponto_3, T3, P3)
 # d_ref = tc.altura_referencia(a_ref_aerodinamico, d_int)
@@ -157,3 +157,17 @@ m_ponto_g3 = tc.mg_ponto(0, 0, m_ponto_3, 0, m_ponto_g2 , 0, 0, l_zp, l_zs, 0, 0
 m_ponto_g4 = tc.mg_ponto(0, 0, 0, m_ponto_g3, 0 , m_ponto_3, 0, l_zp, l_zs, l_zd, 0.05945,  4)
 
 print(m_ponto_g1, m_ponto_g2, m_ponto_g3, m_ponto_g4)
+
+
+#Eq. 50
+area_fenda = tc.area_fenda(d_ref, d_ft) # A altura da fenda é a soma das alturas de referencia e do tubo de chama 
+
+
+#Eq.51 (confirmar com o grupo se vamos colocar a eq 51 como sendo um array igual o de cima)
+m_an1 = m_ponto_3 - m_ponto_g1
+m_an2 = m_ponto_3 - m_ponto_g2
+m_an3 = m_ponto_3 - m_ponto_g3
+m_an4 = m_ponto_3 - m_ponto_g4
+
+A_an = 1
+m_ponto_fenda = tc.m_ponto_fenda_funcao(area_fenda, m_an1, A_an)

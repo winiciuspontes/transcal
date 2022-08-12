@@ -306,7 +306,8 @@ def mg_ponto(m_ponto_zp, mg_ponto_zr, m_ponto_zs, mg_ponto_zs, mg_ponto_zp, m_po
 
 #Equacao 50
 
-def area_fenda(D_ref, D_ft, s):
+def area_fenda(D_ref, D_ft):
+    s = D_ref + D_ft
     area_fenda_calculo = (2 * np.pi * s) * (D_ref + D_ft)
     return area_fenda_calculo
 
@@ -317,7 +318,19 @@ def m_ponto_fenda_funcao(area_fenda, m_an, A_an):
     return vazao_massica_fenda_calculo
 
 
-#Da equacao 52 ate 54 a relação é simples e não compensa fazer uma função 
+#Equacao 52
+
+def rho_an_funcao(mi_an, m_ponto_fenda, A_fenda):
+    rho_an_calculo = (m_ponto_fenda/A_fenda) * mi_an
+    return rho_an_calculo
+
+#Equacao 53
+
+def rho_g_funcao(mi_g, m_ponto_g, A_ft):
+    rho_g_calculo = (m_ponto_g/A_ft) * mi_g
+    return rho_g_calculo
+
+
 
 
 #Equacao 55
@@ -382,6 +395,31 @@ def c2_funcao(Ka, D_an, m_ponto_an, A_an, mi_a, T_w2, T3):
 
 #Da equacao 69 ate 74 as equacoes são simples (geralmente de subtração) então não vale a pena 
 #fazer uma funcao 
+
+#Equacao 70 
+def D_an_funcao(D_ref, D_ft):
+    D_an_calculo = D_ref - D_ft  #Todas variáveis definidas
+    return D_an_calculo
+
+#Equacao 71
+def ka_funcao(T3):
+    Ka_calculo = (5,92657*(10*-4)) + (9,80957(10*-5))*T3 - (4,89398(10*-8))(T3*2) + (1,501141010(-11))((T3)**3) #Todas variáveis definidas
+    return Ka_calculo
+
+#Equacao 72
+def m_ponto_h_zp_funcao(m_ponto_zp, m_ponto_fenda_zp):
+    m_ponto_h_zp_calculo = m_ponto_zp - m_ponto_fenda_zp  #Todas variáveis definidas
+    return m_ponto_h_zp_calculo
+
+#Equacao 73
+def m_ponto_h_zs_funcao(m_ponto_zs, m_ponto_fenda_zs):
+    m_ponto_h_zs_calculo = m_ponto_zs - m_ponto_fenda_zs  #Todas variáveis definidas
+    return m_ponto_h_zs_calculo
+
+#Equacao 74
+def m_ponto_h_zd_funcao(m_ponto_3, m_ponto_zp, m_ponto_zs, m_ponto_fenda_zd)
+    m_ponto_h_zd_calculo = m_ponto_3 - m_ponto_zp - m_ponto_zs - m_ponto_fenda_zd  #Todas variáveis definidas
+    return m_ponto_h_zd_calculo
 
 
 #Equacao 75 
