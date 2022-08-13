@@ -8,14 +8,21 @@ import transcal as tc
 
 #CONSTANTES UTILIZADAS:
 k = 143.5
+#TODO | Para os valores m_ponto, ainda precisamos arbritar uma porcentagem referenta aperda se nao me engano
 m_ponto_3 = 0.243
 m_ponto_comb = 0.252 #Tirar dúvida sobre o m_comb (nao sabemos qual é o valor)
 m_ponto_zp = m_ponto_3 # Não temos certeza sobre esse valor, precisamos tirar dúvida com o professor 
+m_ponto_zs = m_ponto_3
+m_ponto_fenda_zd = 0.247 #Não estou certo se o valor é esse, retirei da pagina 75 do TG do Gasturb
 T3 = 498.42 
+P1 = 100 * 1000 #Tabela  GasTurb
+P2 = 99  * 1000 #Tabela  GasTurb
 P3 = 354.420 * 1000 
 delta_P_3_4 = (354.420 - 333.155) * 1000 
+delta = 0,8 # Adotei para o calculo o Orificio de adminissao de canto vivo, pag 70 do TG
 theta = 73 * (10**6)
 d_int = 0.024 # Valor obtido da tabela 4
+m_ponto_h_zp = 0.254 # TODO | Valor provisorio para não dar erro no pyhton ate a eq 72 ser implementada
 
 
 
@@ -164,6 +171,7 @@ area_fenda = tc.area_fenda(d_ref, d_ft) # A altura da fenda é a soma das altura
 
 
 #Eq.51 (confirmar com o grupo se vamos colocar a eq 51 como sendo um array igual o de cima)
+#TODO | Pessoal essa eq 51, não deveria ser m_fenda ao inves de m_an ???
 m_an1 = m_ponto_3 - m_ponto_g1
 m_an2 = m_ponto_3 - m_ponto_g2
 m_an3 = m_ponto_3 - m_ponto_g3
@@ -171,3 +179,29 @@ m_an4 = m_ponto_3 - m_ponto_g4
 
 A_an = 1
 m_ponto_fenda = tc.m_ponto_fenda_funcao(area_fenda, m_an1, A_an)
+
+#Eq. 74
+m_ponto_h_zd = tc.m_ponto_h_zd_funcao(m_ponto_3,m_ponto_zp,m_ponto_zs,m_ponto_fenda_zd)
+
+#Eq. 75 -78 Areas das orificios respectivos de cada zona (se trata de uma iteração)
+#Aqui temos que calcular A_orificios  de cada zona e isso é resultado de uma iteração entre as funcoes.
+#Pensei em fazer um while para cada zona, basicamente ao fim dessas iterações o valor arbritado no inicio c_d_h_inicial dve ser proximo ao c_d_h_final
+delta_P_1_2 = P2-P1
+c_d_h_inicial = 2 # Valor Abritario para inicio da iteração para encontrar um Cdh que convirja
+
+#TODO definir iteracao abaixo como funcao
+while round(c_d_h_inicial)==round(c_d_h_final):
+    A_h = tc.area_orificio(m_ponto_zp,T3,P3,c_d_h_inicial,delta_P_1_2) #TODO (bruno), verificar por que esse valor está dando complexo.
+    alpha = A_an / A_h
+    #Abaixo considerei m_ponto_fenda como m_an1
+    m_ponto_an = m_ponto_3 - m_an1 - m_ponto_h_zp
+    beta = m_ponto_zp / m_ponto_an
+    mi = beta / alpha
+    k = tc.k_funcao(delta_P_1_2,mi,beta)
+    c_d_h_final = tc.c_d_h(k,delta_P_1_2,beta)
+
+
+
+
+
+

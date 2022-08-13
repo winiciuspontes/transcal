@@ -417,7 +417,7 @@ def m_ponto_h_zs_funcao(m_ponto_zs, m_ponto_fenda_zs):
     return m_ponto_h_zs_calculo
 
 #Equacao 74
-def m_ponto_h_zd_funcao(m_ponto_3, m_ponto_zp, m_ponto_zs, m_ponto_fenda_zd)
+def m_ponto_h_zd_funcao(m_ponto_3, m_ponto_zp, m_ponto_zs, m_ponto_fenda_zd):
     m_ponto_h_zd_calculo = m_ponto_3 - m_ponto_zp - m_ponto_zs - m_ponto_fenda_zd  #Todas variáveis definidas
     return m_ponto_h_zd_calculo
 
