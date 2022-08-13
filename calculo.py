@@ -180,6 +180,8 @@ m_an4 = m_ponto_3 - m_ponto_g4
 A_an = 1
 m_ponto_fenda = tc.m_ponto_fenda_funcao(area_fenda, m_an1, A_an)
 
+
+
 #Eq. 74
 m_ponto_h_zd = tc.m_ponto_h_zd_funcao(m_ponto_3,m_ponto_zp,m_ponto_zs,m_ponto_fenda_zd)
 
@@ -192,10 +194,37 @@ c_d_h_inicial = 2 # Valor Abritario para inicio da iteração para encontrar um 
 #TODO definir iteracao abaixo como funcao
 while round(c_d_h_inicial)==round(c_d_h_final):
     A_h = tc.area_orificio(m_ponto_zp,T3,P3,c_d_h_inicial,delta_P_1_2) #TODO (bruno), verificar por que esse valor está dando complexo.
-    alpha = A_an / A_h
+    alpha = A_an / A_h #Renan: Acho que a relação está invertida 
     #Abaixo considerei m_ponto_fenda como m_an1
     m_ponto_an = m_ponto_3 - m_an1 - m_ponto_h_zp
-    beta = m_ponto_zp / m_ponto_an
+    beta = m_ponto_zp / m_ponto_an #Renan: precisamos variar o zp,zs,zd (cada zona i...)? ou só o de entrada zp?
     mi = beta / alpha
     k = tc.k_funcao(delta_P_1_2,mi,beta)
     c_d_h_final = tc.c_d_h(k,delta_P_1_2,beta)
+
+
+
+#Eq. 78 - Coeficiente de descarga
+#Essa equacao utiliza os mesmos parametros da equacao (77) a fim de formar o gráfico 3
+#delta=0.8 ou 0.6 de acordo com o canto do orificio, convexo ou vivo
+
+c_d_h=tc.cdh(k, 0.8, beta)
+
+
+#Eq. 79 - relacao area e diametro dos orificios
+#Dados da tabela 4, precisamos fazer a relação para cada fileira de furos internos e externos i=1,2,3...
+
+d_hi=tc.relacao_area_diam()
+
+#Equacao 80 ja comentada é apenas a soma dos valores da tabela 4 (numero de orificios)
+
+#Equacao 86 - Area anular externa
+# os valores de Dint, Dref e Dft sao os mesmos obtidos e utilizados na tabela 6
+#substitui o Din por Dint que está na fórmula do Caio porque não existe o subscrito in de acordo com a lista de subscritos
+
+#Equacao 87 - Area anular interna
+#Substituir os mesmos valores da tabela 6 utilizados acima
+
+#Equacao 88 - Utiliza de parametros as equacoes 87 e 86 mas não consegui identificar o que seria o A_h_i (Area_fileira orificio) em valores
+
+
