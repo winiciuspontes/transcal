@@ -169,5 +169,8 @@ m_an2 = m_ponto_3 - m_ponto_g2
 m_an3 = m_ponto_3 - m_ponto_g3
 m_an4 = m_ponto_3 - m_ponto_g4
 
-A_an = 1
-m_ponto_fenda = tc.m_ponto_fenda_funcao(area_fenda, m_an1, A_an)
+a_an = a_ft/0.65
+m_ponto_fenda1 = tc.m_ponto_fenda_funcao(area_fenda, m_an1, a_an)
+m_ponto_fenda2 = tc.m_ponto_fenda_funcao(area_fenda, m_an2, a_an)
+m_ponto_fenda3 = tc.m_ponto_fenda_funcao(area_fenda, m_an3, a_an)
+m_ponto_fenda4 = tc.m_ponto_fenda_funcao(area_fenda, m_an4, a_an)
