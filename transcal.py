@@ -434,14 +434,14 @@ def area_orificio(m_ponto_hi, T3, P3, C_dh, delta_P_h):
 #Equacao 77 
 
 def k_funcao(delta, mi, beta):
-    k_calculo = 1 + delta**2 * (((2* mi**2) + (4*mi**2 + ((mi**2)/(delta**2) * (4*beta - beta**2)) )) ** 0.5)
+    k_calculo = 1 + delta**2 * (((2* mi**2) + (4*mi**4 + ((mi**2)/(delta**2) * (4*beta - beta**2)) )) ** 0.5)=
     return k_calculo
 
 
 #Equacao 78 
 
 def c_d_h(K, delta, beta):
-    c_d_h_calculo = (K - 1)/(delta * ((4*K**2) - ((K*(2 - beta)**2) ) ** 0.5) )
+    c_d_h_calculo = (K - 1)/(delta * ((K**2) - (K*((2 - beta)**2) ) ** 0.5) )
     return c_d_h_calculo
 
 #Equacao 79
@@ -492,14 +492,18 @@ def A_h_i_ext(A_an_ext,A_an_int,A_h_i):
     return ((A_an_ext)/(A_an_ext+A_an_int))*A_h_i
 
 # Equacao 86
-def  A_an_ext(D_in,D_ref,D_ft):
-    return (np.pi/4)*(pow((D_in+(2*D_ref)),2)-pow((D_in+D_ref+D_ft),2))
+def  A_an_ext(D_int,D_ref,D_ft):
+    return (np.pi/4)*(pow((D_int+(2*D_ref)),2)-(pow((D_int+D_ref+D_ft),2)))
 
 # Equacao 87
-def  A_an_int(D_in,D_ref,D_ft):
-    return (np.pi/4)*(pow((D_in+D_ref-D_ft),2)-pow(D_in,2))
+def  A_an_int(D_int,D_ref,D_ft):
+    return (np.pi/4)*(pow((D_int+D_ref-D_ft),2))-(pow(D_int,2)))
 
 #Terminar até a equacação 87 (Ver com o grupo se vão querer fazer com funções)
+
+#Equacao 88
+def A_h_int(A_an_int, A_an_ext, Ahi):
+    calculo_a_h_int=A_n_int/ (A_an_int+A_an_ext)* A_h_i
 
 # if __name__ == "__main__":
 #     # Iniciar metodologia
