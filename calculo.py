@@ -9,10 +9,10 @@ import transcal as tc
 #CONSTANTES UTILIZADAS:
 k = 143.5
 #TODO | Para os valores m_ponto, ainda precisamos arbritar uma porcentagem referenta aperda se nao me engano
-m_ponto_3 = 0.243 * 0.19
+m_ponto_3 = 0.243 
 m_ponto_comb = 0.00398 * 0.19 #Tirar dúvida sobre o m_comb (nao sabemos qual é o valor)
-m_ponto_zp = m_ponto_3 
-m_ponto_zs = m_ponto_3 
+m_ponto_zp = m_ponto_3  * 0.19
+m_ponto_zs = m_ponto_3 * 0.19
 m_ponto_fenda_zd = 0.247 * 0.19  #Não estou certo se o valor é esse, retirei da pagina 75 do TG do Gasturb
 T3 = 498.42
 T4 = 1100
@@ -42,8 +42,8 @@ phi_estequiometrica = 0.06818
 #VALORES DO PHI DE ACORDO COM AS EQUAÇÕES DO TG
 phi_pobre = tc.phi_pobre_function(T3)
 phi_rico = tc.phi_rico_function(T3)
-
-
+m_ponto_zs = (phi_global/phi_zs) * m_ponto_3
+print("Valor de m_ponto_zs", m_ponto_zs)
 #Calculando o delta T_phi com phi = 1 (Eq.39)
 delta_T_phi = 2185 - (0.5 * T3)
 delta_T_zp = 2830 - (800 * phi_zp) #Aproximado para quando T3=400K  - Não sabemos que de onde vem esse valor de 2830
@@ -84,26 +84,28 @@ m_ponto_arref = tc.porcentagem_ar_resfriamento(T3, m_ponto_3) #Eq.37 - Equacao n
 print("Valor de m_ponto_arref", m_ponto_arref)
 
 #Calculando a Eq.38
-m_ponto_zd = tc.m_ponto_zd_funcao(m_ponto_zp, m_ponto_zs, m_ponto_arref, m_ponto_3)
+m_ponto_zd = tc.m_ponto_zd_funcao(m_ponto_zp, m_ponto_zs, 0, m_ponto_3) # m_ponto_arref desconsiderado para não dar negativo
 print("Valor de m_ponto_zd", m_ponto_zd)
 
 
 #Eq. 40 - calculando o eta
 eta_zr = tc.eta_zr(T3,P3)
+print("Valor de eta_zr", eta_zr)
 #Eq.39 - As eq estavam fora de ordem
 t_max_zr = tc.t_max_zr(T3, eta_zr, delta_T_phi)
-
+print("Valor de t_max_zr", t_max_zr)
 #Eq.41 - Calculando a T_med - dando dif de 10 graus :
 t_media_zr = tc.t_media_zr(T3, t_max_zr)
+print("Valor de t_media_zr", t_media_zr)
 # delta_T_zp = 3000 - t_media_zr
 
 #Eq.43 - Calculando o eta_zp:
 
 eta_zp = tc.eta_zp(T3, P3)
-
+print("Valor de eta_zp", eta_zp)
 #Eq.42 - Calculando a Tsaida_zp - Caio trocou a ordem novamente:
 t_saida_zp = tc.t_saida_zp(T3, eta_zp, delta_T_zp)
-
+print("Valor de t_saida_zp", t_saida_zp)
 #Eq.45 - Calculando o Tsaida_zs rico
 eta_zs_rico = tc.eta_zs(phi_zs)
 
@@ -113,7 +115,7 @@ t_saida_zs_rico = tc.t_saida_zs(T3, eta_zs_rico, delta_T_zs)
 
 #Eq. 49 - Calculando o V_zs:
 v_zs = tc.v_zs(a_ft, l_zs)
-
+print("Valor de v_zs", v_zs)
 
 # Eq. 48 - Calculando o psi_maiusculo:
 #Vamos calcular o psi_t3 porque o psi_300 é um caso especifico. Perg para o professor
@@ -151,6 +153,8 @@ x1 = np.linspace(0, l_zr, 50)
 x2 = np.linspace(l_zr, l_zp, 50)
 x3 = np.linspace(l_zp, (l_zp + l_zs), 50)
 x4 = np.linspace((l_zp + l_zs), lcc, 50)
+
+
 # x_total = np.linspace(0, lcc, 120)
 
 x_total = np.linspace(0, lcc, 200)
@@ -178,6 +182,7 @@ for f in range(len(x4)):
     tg4_lista.append(Tg4)
 
 
+#Gráfico aparentemente certo - bateu com o TG do caio (grafico 4)
 
 # plt.figure(figsize = (15,10))
 # plt.plot(x1*1000, tg1_lista, label='Zona de Recirc.')
@@ -219,7 +224,8 @@ for indice,valor in enumerate (range(len(x3))):
 mg_total = mg_ponto_zr_lista + mg_ponto_zp_lista + mg_ponto_zs_lista + mg_ponto_zd_lista
 
 
-
+# plt.plot(x_total,mg_total )
+# plt.show()
 # plt.figure(figsize = (15,10))
 # plt.plot(x1*1000, mg_ponto_zr_lista, label='Zona de Recirc.')
 # plt.plot(x2*1000, mg_ponto_zp_lista, label='Zona Primária')
@@ -235,7 +241,7 @@ mg_total = mg_ponto_zr_lista + mg_ponto_zp_lista + mg_ponto_zs_lista + mg_ponto_
 
 #Eq. 50
 area_fenda = tc.area_fenda(d_ref, d_ft) # A altura da fenda é a soma das alturas de referencia e do tubo de chama 
-
+print("Valor de area_fenda", area_fenda)
 
 #Eq. 51 (confirmar com o grupo se vamos colocar a eq 51 como sendo um array igual o de cima)
 #TODO | Pessoal essa eq 51, não deveria ser m_fenda ao inves de m_an ???
@@ -260,7 +266,7 @@ A_an2 = a_ref_aerodinamica - a_ft
 
 #Eq. 54 
 
-#
+
 
 
 
