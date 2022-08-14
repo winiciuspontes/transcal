@@ -302,8 +302,7 @@ def mg4_ponto(mg_ponto_zs, m_ponto_zd, x, L_zp, L_zs, L_zd):
 
 #Equacao 50
 
-def area_fenda(D_ref, D_ft):
-    s = D_ref + D_ft
+def area_fenda(D_ref, D_ft, s):
     area_fenda_calculo = (2 * np.pi * s) * (D_ref + D_ft)
     return area_fenda_calculo
 
@@ -328,14 +327,18 @@ def razao_rho_g_mi_an(m_ponto_g, A_ft):
 
 #Equacao 54
 
-def eta_r(m, mi_ar, mi_g, x, s, t):
-    if(m > 0.5 and m <= 1.3 ):
-        nr_calculo = ((1.11 * m )**0.65) * ((mi_ar/mi_g)**0.15) * ((x/s)**-0.2) * ((t/s)**-00.2)
-    elif(m > 1.3 and m < 4):
-        nr_calculo = 1.128  * ((mi_ar/mi_g)**0.15) * ((x/s)**-0.2) * ((t/s)**-00.2)
+# def eta_r(m, mi_ar, mi_g, t, s):
+#     x_s = 75 #Metade do intervalo da tabela
+#     if(m > 0.5 and m <= 1.3 ):
+#         nr_calculo = ((1.11 * m )**0.65) * ((mi_ar/mi_g)**0.15) * (x_s**-0.2) * ((t/s)**-00.2)
+#     elif(m > 1.3 and m < 4):
+#         nr_calculo = 1.128  * ((mi_ar/mi_g)**0.15) * ((x_s)**-0.2) * ((t/s)**-00.2)
+#     return nr_calculo
+def eta_r(m, mi_ar, mi_g, t, s):
+    x_s = 75 #Metade do intervalo da tabela
+    nr_calculo = ((1.11 * m )**0.65) * ((mi_ar/mi_g)**0.15) * (x_s**-0.2) * ((t/s)**-00.2)
     return nr_calculo
-
-
+    
 #Equacao 55
 
 def mi_ar_funcao(T3):

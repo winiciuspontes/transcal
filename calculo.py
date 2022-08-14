@@ -198,30 +198,52 @@ for f in range(len(x4)):
 # plt.show()
 
 
-mg_ponto_zr_lista = []
-mg_ponto_zp_lista = []
-mg_ponto_zs_lista = []
-mg_ponto_zd_lista = []
-mg_total = []
-for indice,valor in enumerate (range(len(x1))):
-    mg_ponto_zr = tc.mg1_ponto(m_ponto_zp)
-    mg_ponto_zr_lista.append(mg_ponto_zr)
 
-for indice, valor in enumerate (range(len(x2))):
-    mg_ponto_zp = tc.mg2_ponto(mg_ponto_zr_lista[indice], m_ponto_zp, x2[valor], l_zr,l_zp)
-    mg_ponto_zp_lista.append(mg_ponto_zp)
+# mg_ponto_zr_lista = []
+# mg_ponto_zp_lista = []
+# mg_ponto_zs_lista = []
+# mg_ponto_zd_lista = []
+
+# man_1_lista = []
+# man_2_lista = []
+# man_3_lista = []
+# man_4_lista = []
+# mg_total = []
+
+m_ponto_g1 =  tc.mg1_ponto(m_ponto_zp)
+m_ponto_g2 =  tc.mg2_ponto(m_ponto_g1, m_ponto_zp, 0.014, l_zr,l_zp)
+m_ponto_g3 =  tc.mg3_ponto(m_ponto_g2, m_ponto_zs, 0.033, l_zp, l_zs)
+m_ponto_g4 =  tc.mg4_ponto(m_ponto_g3, m_ponto_zd, 0.043,l_zp, l_zs, l_zd)
+
+# for indice,valor in enumerate (range(len(x1))):
+#     mg_ponto_zr = tc.mg1_ponto(m_ponto_zp)
+#     man_1_calculo = m_ponto_3 - mg_ponto_zr
+#     mg_ponto_zr_lista.append(mg_ponto_zr)
+#     man_1_lista.append(man_1_calculo)
+    
+
+# for indice, valor in enumerate (range(len(x2))):
+#     mg_ponto_zp = tc.mg2_ponto(mg_ponto_zr_lista[indice], m_ponto_zp, x2[valor], l_zr,l_zp)
+#     man_2_calculo = m_ponto_3 - mg_ponto_zp
+#     mg_ponto_zp_lista.append(mg_ponto_zp)
+#     man_2_lista.append(man_2_calculo)
 
 
-for indice,valor in enumerate (range(len(x3))):
-    mg_ponto_zs = tc.mg3_ponto(mg_ponto_zp_lista[indice], m_ponto_zs, x3[valor], l_zp, l_zs)
-    mg_ponto_zs_lista.append(mg_ponto_zs)
+# for indice,valor in enumerate (range(len(x3))):
+#     mg_ponto_zs = tc.mg3_ponto(mg_ponto_zp_lista[indice], m_ponto_zs, x3[valor], l_zp, l_zs)
+#     man_3_calculo = m_ponto_3 - mg_ponto_zs
+#     mg_ponto_zs_lista.append(mg_ponto_zs)
+#     man_3_lista.append(man_3_calculo)
 
-m_ponto_zd = 0.12329510485804025
-for indice,valor in enumerate (range(len(x3))):
-    mg_ponto_zd = tc.mg4_ponto(mg_ponto_zs_lista[indice], m_ponto_zd, x4[valor], l_zp, l_zs, l_zd)
-    mg_ponto_zd_lista.append(mg_ponto_zd)
+# m_ponto_zd = 0.12329510485804025
+# for indice,valor in enumerate (range(len(x3))):
+#     mg_ponto_zd = tc.mg4_ponto(mg_ponto_zs_lista[indice], m_ponto_zd, x4[valor], l_zp, l_zs, l_zd)
+#     man_4_calculo = m_ponto_3 - mg_ponto_zd
+#     mg_ponto_zd_lista.append(mg_ponto_zd)
+#     man_4_lista.append(man_4_calculo)
 
-mg_total = mg_ponto_zr_lista + mg_ponto_zp_lista + mg_ponto_zs_lista + mg_ponto_zd_lista
+# mg_total = mg_ponto_zr_lista + mg_ponto_zp_lista + mg_ponto_zs_lista + mg_ponto_zd_lista
+# m_an_total = man_1_lista + man_2_lista + man_3_lista + man_4_lista
 
 
 # plt.plot(x_total,mg_total )
@@ -240,34 +262,52 @@ mg_total = mg_ponto_zr_lista + mg_ponto_zp_lista + mg_ponto_zs_lista + mg_ponto_
 
 
 #Eq. 50
-area_fenda = tc.area_fenda(d_ref, d_ft) # A altura da fenda é a soma das alturas de referencia e do tubo de chama 
-print("Valor de area_fenda", area_fenda)
+s = 0.415
+area_fenda = tc.area_fenda(d_ref, d_ft, s) # A altura da fenda é a soma das alturas de referencia e do tubo de chama 
+# print("Valor de area_fenda", area_fenda)
 
 #Eq. 51 (confirmar com o grupo se vamos colocar a eq 51 como sendo um array igual o de cima)
 #TODO | Pessoal essa eq 51, não deveria ser m_fenda ao inves de m_an ???
-# m_an1 = m_ponto_3 - m_ponto_g1
-# m_an2 = m_ponto_3 - m_ponto_g2
-# m_an3 = m_ponto_3 - m_ponto_g3
-# m_an4 = m_ponto_3 - m_ponto_g4
 
-A_an = np.pi/4 * ((0.192**2 ) - (0.1344 ** 2))
-A_an2 = a_ref_aerodinamica - a_ft
+a_an = tc.A_an_int(d_int, d_ref, d_ft)
+m_an1 = m_ponto_3 - m_ponto_g1
+m_an2 = m_ponto_3 - m_ponto_g2
+m_an3 = m_ponto_3 - m_ponto_g3
+m_an4 = m_ponto_3 - m_ponto_g4
+
+
+# A_an2 = a_ref_aerodinamica - a_ft
 # print(A_an)
 # print(A_an2)
 #Eq. 51
-# m_ponto_fenda2 = tc.m_ponto_fenda_funcao(area_fenda, m_an2, A_an)
-
+m_ponto_fenda1 = tc.m_ponto_fenda_funcao(area_fenda, m_an1, a_an)
+m_ponto_fenda2 = tc.m_ponto_fenda_funcao(area_fenda, m_an2, a_an)
+m_ponto_fenda3 = tc.m_ponto_fenda_funcao(area_fenda, m_an3, a_an)
+m_ponto_fenda4 = tc.m_ponto_fenda_funcao(area_fenda, m_an4, a_an)
 
 #Eq. 52
-# razao_rho_an_mi_an = tc.razao_rho_an_mi_an(m_ponto_fenda2, area_fenda)
+razao_rho_an_mi_an1 = tc.razao_rho_an_mi_an(m_ponto_fenda1, area_fenda)
+razao_rho_an_mi_an2 = tc.razao_rho_an_mi_an(m_ponto_fenda2, area_fenda)
+razao_rho_an_mi_an3 = tc.razao_rho_an_mi_an(m_ponto_fenda3, area_fenda)
+razao_rho_an_mi_an4 = tc.razao_rho_an_mi_an(m_ponto_fenda4, area_fenda)
 
 #Eq. 53
-# razao_rho_g_mi_an = tc.razao_rho_g_mi_an(m_ponto_g2, a_ft)
+razao_rho_an_mi_an1 = tc.razao_rho_g_mi_an(m_ponto_g1, a_ft)
+razao_rho_an_mi_an2 = tc.razao_rho_g_mi_an(m_ponto_g2, a_ft)
+razao_rho_an_mi_an3 = tc.razao_rho_g_mi_an(m_ponto_g3, a_ft)
+razao_rho_an_mi_an4 = tc.razao_rho_g_mi_an(m_ponto_g4, a_ft)
+
+
+
+#Eq. 55
+mi_ar = tc.mi_ar_funcao(T3)
+mi_g= tc.mi_g_funcao(T3)
 
 #Eq. 54 
-
-
-
+t = ((1/2) * 10**-3)
+# n_r = tc.eta_r(0.5, mi_ar, mi_g_funcao, t, s)
+n_r = tc.eta_r(0.5, mi_ar, mi_g, t, s)
+print(n_r)
 
 
 
