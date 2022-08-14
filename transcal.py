@@ -97,11 +97,11 @@ def perfil_radial_temp(T_mr, T4, T3):
 
 #Equacao 28 - Obtenção da área de referência pela aerodinâmica 
 
-def area_tranferencia_aerodinamica(k, m_ponto_3, T3, P3):
+def area_tranferencia_aerodinamica(k, m_ponto_3, T3, P3, razao_delta_P_3_4_q_ref, razao_delta_P_3_4_q_p3):
     camara_analunar = True
     if(camara_analunar):
         razao_delta_P_3_4_q_ref = 20/0.06 # Valor retirado da Tabela 5 
-        area_transf =  ( (k * (((m_ponto_3 * (T3**0.5) )/(P3))**2  * (razao_delta_P_3_4_q_ref)) ) ** 0.5 ) 
+        area_transf =  ( (k * (((m_ponto_3 * (T3**0.5) )/(P3))**2  * (razao_delta_P_3_4_q_ref/ razao_delta_P_3_4_q_p3 )) ) ** 0.5 ) 
     return area_transf
 
 
@@ -177,14 +177,14 @@ def quant_ar_zona_secundaria(phi_global,rico,phi_Zs):
 #Equacao 37 
 
 def porcentagem_ar_resfriamento(T3, m_ponto_3):
-    m_ponto_arref = (0.1*T3 - 30) * m_ponto_3
+    m_ponto_arref = ((0.1*T3 )- 30) * m_ponto_3
     return m_ponto_arref
 
 
 #Equacao 38 
 
-def vazao_ar_zona_diluicao(m_ponto_zp, m_ponto_zs, m_ponto_arref, m_ponto_3):
-    m_ponto_zd = (m_ponto_3 - (sum(m_ponto_zp, m_ponto_zs, m_ponto_arref)))
+def m_ponto_zd_funcao(m_ponto_zp, m_ponto_zs, m_ponto_arref, m_ponto_3):
+    m_ponto_zd = m_ponto_3 * (1 - ((m_ponto_zp + m_ponto_zs + m_ponto_arref)/m_ponto_3))
     return m_ponto_zd
 
 
@@ -265,42 +265,39 @@ def v_zs(A_ft, L_sz):
 
 #Tabela 7 - Definicao do Tg - conferir se nao esqueceu nenhum termo
 
-def tg(T_med_zr, T_saida_zp,T_saida_zs,T_saida_zd, L_zp, L_zr, L_zs, L_dz, x, n_regiao):
-        
-    if(n_regiao == 1):
-        Tg = T_med_zr
+def tg_1(T_med_zr):
+    Tg1_calculo = T_med_zr
+    return Tg1_calculo
 
-    elif(n_regiao == 2):
-        Tg = T_med_zr + ((T_saida_zp - T_med_zr)/(L_zp - L_zr) * (x - L_zr))
+def tg_2(T_med_zr, T_saida_zp, L_zp, L_zr, x): 
+        Tg2_calculo = T_med_zr + ((T_saida_zp - T_med_zr)/(L_zp - L_zr) * (x - L_zr))
+        return Tg2_calculo
+def tg_3(T_saida_zp, T_saida_zs, L_zs, L_zp, x):
+        Tg3_calculo = T_saida_zp + ((T_saida_zs - T_saida_zp)/L_zs)*(x-L_zp)
+        return Tg3_calculo
 
-    elif(n_regiao == 3):
-        Tg = T_saida_zp + ((T_saida_zs - T_saida_zp)/L_zs * (x - L_zp))
-
-    elif(n_regiao == 4):
-        Tg = T_saida_zs + ((T_saida_zd - T_saida_zs)/ L_dz * (x - L_zp - L_zs))
-    
-    return Tg
+def tg_4(T_saida_zs, T_saida_zd, L_dz, x, L_zp, L_zs):
+        Tg3_calculo = T_saida_zs + ((T_saida_zd - T_saida_zs)/ L_dz * (x - L_zp - L_zs))
+        return Tg3_calculo
 
 
 #Tabela 8 - Definicao da vazao massica dos gases localmente
 
-def mg_ponto(m_ponto_zp, mg_ponto_zr, m_ponto_zs, mg_ponto_zs, mg_ponto_zp, m_ponto_zd, L_zr, L_zp, L_zs, L_zd, x, n_regiao_massa):
+def mg1_ponto(m_ponto_zp):
+    mg1_ponto = 3/4 * m_ponto_zp
+    return mg1_ponto
 
+def mg2_ponto(mg_ponto_zr, m_ponto_zp, x, L_zr,L_zp):
+    mg2_ponto = mg_ponto_zr + ((m_ponto_zp - mg_ponto_zr) * (x - L_zr)/(L_zp - L_zr) )
+    return mg2_ponto
 
+def mg3_ponto(mg_ponto_zp, m_ponto_zs, x, L_zp, L_zs):
+    mg3_ponto = mg_ponto_zp + ((m_ponto_zs - mg_ponto_zp) * (x - L_zp)/L_zs)
+    return mg3_ponto
 
-    if(n_regiao_massa == 1):
-        mg_ponto = 3/4 * m_ponto_zp
-
-    elif(n_regiao_massa == 2):
-        mg_ponto = mg_ponto_zr + ((m_ponto_zp - mg_ponto_zr) * (x - L_zr)/(L_zp - L_zr) )
-
-    elif(n_regiao_massa == 3):
-        mg_ponto = mg_ponto_zp + ((m_ponto_zs - mg_ponto_zp) * (x - L_zp)/L_zs)
-
-    elif(n_regiao_massa == 4):
-        mg_ponto = mg_ponto_zs + ((m_ponto_zd - mg_ponto_zs) * (x - (L_zp + L_zs))/L_zd)
-    
-    return mg_ponto
+def mg4_ponto(mg_ponto_zs, m_ponto_zd, x, L_zp, L_zs, L_zd):
+    mg4_ponto = mg_ponto_zs + ((m_ponto_zd - mg_ponto_zs) * (x - (L_zp + L_zs))/L_zd)
+    return mg4_ponto
 
 
 #Equacao 50
@@ -319,23 +316,30 @@ def m_ponto_fenda_funcao(area_fenda, m_an, A_an):
 
 #Equacao 52
 
-def rho_an_funcao(mi_an, m_ponto_fenda, A_fenda):
-    rho_an_calculo = (m_ponto_fenda/A_fenda) * mi_an
-    return rho_an_calculo
+def razao_rho_an_mi_an(m_ponto_fenda, A_fenda):
+    razao_rho_an_mi_an = (m_ponto_fenda/A_fenda)
+    return razao_rho_an_mi_an
 
 #Equacao 53
 
-def rho_g_funcao(mi_g, m_ponto_g, A_ft):
-    rho_g_calculo = (m_ponto_g/A_ft) * mi_g
-    return rho_g_calculo
+def razao_rho_g_mi_an(m_ponto_g, A_ft):
+    razao_rho_g_mi_an = (m_ponto_g/A_ft)
+    return razao_rho_g_mi_an
 
+#Equacao 54
 
+def eta_r(m, mi_ar, mi_g, x, s, t):
+    if(m > 0.5 and m <= 1.3 ):
+        nr_calculo = ((1.11 * m )**0.65) * ((mi_ar/mi_g)**0.15) * ((x/s)**-0.2) * ((t/s)**-00.2)
+    elif(m > 1.3 and m < 4):
+        nr_calculo = 1.128  * ((mi_ar/mi_g)**0.15) * ((x/s)**-0.2) * ((t/s)**-00.2)
+    return nr_calculo
 
 
 #Equacao 55
 
 def mi_ar_funcao(T3):
-    mi_ar_calculo = (0.03863 + (0.00749 * 𝑇3) - ((5.8564 * 10**-6) * T3 ** 2) + ((2.7769 * 10**-9) * T3**3) - ((4.600774 * 10 **-13) * T3**4 )) * 10 **-5
+    mi_ar_calculo = (0.03863 + (0.00749 * T3) - ((5.8564 * 10**-6) * T3 ** 2) + ((2.7769 * 10**-9) * T3**3) - ((4.600774 * 10 **-13) * T3**4 )) * 10 **-5
     return mi_ar_calculo
 
 
@@ -349,11 +353,17 @@ def mi_g_funcao(T_g):
 #Da equacao 57 ate 60 eu não entendi muito bem 
 
 
+#Equacao 60
+def k12_funcao(kw, tw, Tw1, Tw2):
+    k12 = (kw/tw)*(Tw1-Tw2)
+    return k12
+
 #Equacao 61
 
 def r1_funcao(sigma, epsilon_w, epsilon_g,  T_g, T_w1):
     R1_calculo = 0.5 * sigma * (1 + epsilon_w) * epsilon_g * (T_g**1.5) * ((T_g ** 2.5) - (T_w1 ** 2.5))
     return R1_calculo
+
 
 
 #Equacao 63 
@@ -376,7 +386,7 @@ def c1_funcao_1_3(k_g, x, Re, T_wg, T_w1, s):
 
 #Equacao 66
 def kg_funcao(T_g):
-    k_g_calculo = (5.92657 * 10**4) +( 9.80957 * 10-5 ** T_g) - ((4.89398 * (10**-8) * (T_g**2))) + ((1.501141010 **-11) * (T_g**3))
+    k_g_calculo = (5.92657 * 10**4) +( 9.80957 * (10**-5 * T_g)) - ((4.89398 * (10**-8) * (T_g**2))) + ((1.5011410 * (10 **-11)) * (T_g**3))
     return k_g_calculo
 
 
@@ -402,7 +412,7 @@ def D_an_funcao(D_ref, D_ft):
 
 #Equacao 71
 def ka_funcao(T3):
-    Ka_calculo = (5,92657*(10*-4)) + (9,80957(10*-5))*T3 - (4,89398(10*-8))(T3*2) + (1,501141010(-11))((T3)**3) #Todas variáveis definidas
+    Ka_calculo = (5.92657*(10**-4)) + (9.80957*(10**-5))*T3 - (4.89398*(10**-8))*(T3**2) + (1.5011410 * (10 **(-11)))*((T3)**3) #Todas variáveis definidas
     return Ka_calculo
 
 #Equacao 72
@@ -434,7 +444,7 @@ def area_orificio(m_ponto_hi, T3, P3, C_dh, delta_P_h):
 #Equacao 77 
 
 def k_funcao(delta, mi, beta):
-    k_calculo = 1 + delta**2 * (((2* mi**2) + (4*mi**4 + ((mi**2)/(delta**2) * (4*beta - beta**2)) )) ** 0.5)=
+    k_calculo = 1 + delta**2 * (((2* mi**2) + (4*mi**4 + ((mi**2)/(delta**2) * (4*beta - beta**2)) )) ** 0.5)
     return k_calculo
 
 
@@ -489,7 +499,7 @@ def A_h_i_ext(A_an_ext,A_ext,A_int,A_h_i):
 
 # Equacao 85
 def A_h_i_ext(A_an_ext,A_an_int,A_h_i):
-    return ((A_an_ext)/(A_an_ext+A_an_int))*A_h_i
+    return ((A_an_ext)/(A_an_ext + A_an_int)) * A_h_i
 
 # Equacao 86
 def  A_an_ext(D_int,D_ref,D_ft):
@@ -497,13 +507,13 @@ def  A_an_ext(D_int,D_ref,D_ft):
 
 # Equacao 87
 def  A_an_int(D_int,D_ref,D_ft):
-    return (np.pi/4)*(pow((D_int+D_ref-D_ft),2))-(pow(D_int,2)))
+    return (np.pi/4)*(pow((D_int+D_ref-D_ft),2))-(pow(D_int,2))
 
-#Terminar até a equacação 87 (Ver com o grupo se vão querer fazer com funções)
 
 #Equacao 88
 def A_h_int(A_an_int, A_an_ext, Ahi):
-    calculo_a_h_int=A_n_int/ (A_an_int+A_an_ext)* A_h_i
+    calculo_a_h_int= (A_an_int/ (A_an_int+A_an_ext)* Ahi )
+    return calculo_a_h_int
 
 # if __name__ == "__main__":
 #     # Iniciar metodologia

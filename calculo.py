@@ -9,30 +9,39 @@ import transcal as tc
 #CONSTANTES UTILIZADAS:
 k = 143.5
 #TODO | Para os valores m_ponto, ainda precisamos arbritar uma porcentagem referenta aperda se nao me engano
-m_ponto_3 = 0.243
-m_ponto_comb = 0.252 #Tirar dúvida sobre o m_comb (nao sabemos qual é o valor)
-m_ponto_zp = m_ponto_3 # Não temos certeza sobre esse valor, precisamos tirar dúvida com o professor 
-m_ponto_zs = m_ponto_3
-m_ponto_fenda_zd = 0.247 #Não estou certo se o valor é esse, retirei da pagina 75 do TG do Gasturb
-T3 = 498.42 
+m_ponto_3 = 0.243 * 0.19
+m_ponto_comb = 0.00398 * 0.19 #Tirar dúvida sobre o m_comb (nao sabemos qual é o valor)
+m_ponto_zp = m_ponto_3 
+m_ponto_zs = m_ponto_3 
+m_ponto_fenda_zd = 0.247 * 0.19  #Não estou certo se o valor é esse, retirei da pagina 75 do TG do Gasturb
+T3 = 498.42
+T4 = 1100
 P1 = 100 * 1000 #Tabela  GasTurb
 P2 = 99  * 1000 #Tabela  GasTurb
 P3 = 354.420 * 1000 
 delta_P_3_4 = (354.420 - 333.155) * 1000 
-delta = 0,8 # Adotei para o calculo o Orificio de adminissao de canto vivo, pag 70 do TG
-theta = 73 * (10**6)
+delta = 0.8 # Adotei para o calculo o Orificio de adminissao de canto vivo, pag 70 do TG
+theta = 73 * (10**6) 
 d_int = 0.024 # Valor obtido da tabela 4
-m_ponto_h_zp = 0.254 # TODO | Valor provisorio para não dar erro no pyhton ate a eq 72 ser implementada
+m_ponto_h_zp = 0.254  #TODO | Valor provisorio para não dar erro no pyhton ate a eq 72 ser implementada
+razao_delta_P_3_4_q_ref = 20
+razao_delta_P_3_4_q_p3 = 0.06
 
 
+#CALCULO DOS PHIS DE ACORDO COM O CAIO:
 
-#CALCULO DOS PHIS:
+#Eq.30, 31, 32, 33
 phi_zp = 1.249
 phi_zs = 0.8
 phi_zd = 0.237
 phi_global = 0.237
 phi_pobre = 0.45
 phi_rico = 2.553
+phi_estequiometrica = 0.06818
+
+#VALORES DO PHI DE ACORDO COM AS EQUAÇÕES DO TG
+phi_pobre = tc.phi_pobre_function(T3)
+phi_rico = tc.phi_rico_function(T3)
 
 
 #Calculando o delta T_phi com phi = 1 (Eq.39)
@@ -42,20 +51,23 @@ delta_T_zs = 1600 - (0.5 * T3)
 
 
 b = tc.b_function(phi_zp) #Eq. antes da 30
-d_ref = 0.03863 # Valor obtido da tabela 4
+d_ref = 0.03863 # Valor obtido da tabela 4)
 
-# a_ref_aerodinamico = tc.area_tranferencia_aerodinamica(k, m_ponto_3, T3, P3)
-# d_ref = tc.altura_referencia(a_ref_aerodinamico, d_int)
+#Acima da Eq. 30 
+b = 245*(1.39 + np.log(phi_zp))
 
+# a_ref_quimico = tc.area_tranferencia_quimica(P3, d_ref, T3, b, m_ponto_3, theta)
+a_ref_aerodinamica = tc.area_tranferencia_aerodinamica(k, m_ponto_3, T3, P3, razao_delta_P_3_4_q_ref, razao_delta_P_3_4_q_p3)
+print("Valor de a_ref_aerodinamica", a_ref_aerodinamica)
+# a_ref = 0.00759996 # A_ref do Caio
 
-a_ref = 0.00759996 # A_ref do Caio
-
-d_ref = tc.altura_referencia(a_ref, d_int) # Eq. Tabela 6 
-
-a_ft = tc.area_ref_trans(a_ref) #Eq. 34 - No trabalho do Caio ele multiplicou por 10 ^ 6
-
+d_ref = tc.altura_referencia(a_ref_aerodinamica, d_int) # Eq. Tabela 6 
+print("Valor de d_ref", d_ref)
+a_ft = tc.area_ref_trans(a_ref_aerodinamica) #Eq. 34 - No trabalho do Caio ele multiplicou por 10 ^ 6
+print("Valor de a_ft", a_ft)
 d_ft = tc.altura_tubo_chama(a_ft, d_int, d_ref) #Eq. Tabela 6 (para o caso anular)
-
+print("Valor de d_ft", d_ft)
+# d_ft = 0.02337444281125872
 
 #Calculando o Lcc com os parametros necessarios:
 l_zp = (3/4) * d_ft #Enunciado antes da Eq.35 - Pegamos o l_zp_max, para pegar o minimo trocamos o 3/4 por 2/3
@@ -65,11 +77,16 @@ l_zr = (1/2) * d_ft #Enunciado antes da Eq.35
 lcc = tc.comprimento_camara_combustao(l_zp,l_zs,l_zd) #Eq.35 - Nosso resultado bate com a Tabela 11
 
 #Eq. 36 (phi_global_rico/phi_zs) é convencionada da literatura como sendo 0.8 
+razao_phi_global_rico_phi_zs = 0.8 
 
 #Calculando a Eq.37
 m_ponto_arref = tc.porcentagem_ar_resfriamento(T3, m_ponto_3) #Eq.37 - Equacao nao confirmada(não achamos o ela no Tg)
+print("Valor de m_ponto_arref", m_ponto_arref)
 
-#Calculando a Eq.38 - Não achamos o valor de m_zp e m_zs. Conseguiriamos calcular o m_zd.
+#Calculando a Eq.38
+m_ponto_zd = tc.m_ponto_zd_funcao(m_ponto_zp, m_ponto_zs, m_ponto_arref, m_ponto_3)
+print("Valor de m_ponto_zd", m_ponto_zd)
+
 
 #Eq. 40 - calculando o eta
 eta_zr = tc.eta_zr(T3,P3)
@@ -78,7 +95,7 @@ t_max_zr = tc.t_max_zr(T3, eta_zr, delta_T_phi)
 
 #Eq.41 - Calculando a T_med - dando dif de 10 graus :
 t_media_zr = tc.t_media_zr(T3, t_max_zr)
-
+# delta_T_zp = 3000 - t_media_zr
 
 #Eq.43 - Calculando o eta_zp:
 
@@ -130,55 +147,121 @@ t_saida_zd = 1134
 
 tg_lista = []
 
-x1 = np.linspace(0, l_zr, 30)
-x2 = np.linspace(l_zr, 0.01622, 30)
-x3 = np.linspace(0.01622, 0.02704, 30)
-x4 = np.linspace(0.02704, 0.05945, 30)
-x_total = np.linspace(0, 0.05945, 120)
+x1 = np.linspace(0, l_zr, 50)
+x2 = np.linspace(l_zr, l_zp, 50)
+x3 = np.linspace(l_zp, (l_zp + l_zs), 50)
+x4 = np.linspace((l_zp + l_zs), lcc, 50)
+# x_total = np.linspace(0, lcc, 120)
 
+x_total = np.linspace(0, lcc, 200)
 
-#Fazendo o looping para conseguir plotar o gráficos das temperaturas
+tg1_lista = []
+tg2_lista = []
+tg3_lista = []
+tg4_lista = []
+# Fazendo o looping para conseguir plotar o gráficos das temperaturas
 for c in range(len(x1)):
     Tg1 = t_media_zr
     tg_lista.append(Tg1)
+    tg1_lista.append(Tg1)
 
 for d in range(len(x2)):
-    Tg2 = tc.tg(t_media_zr, t_saida_zp, 0, 0, l_zp, l_zr, 0, 0, x2[d], 2)
-    tg_lista.append(Tg2)
+    Tg2 = tc.tg_2(t_media_zr, t_saida_zp, l_zp,l_zr, x2[d])
+    tg2_lista.append(Tg2)
 
 for e in range(len(x3)):
-    Tg3 = tc.tg(0, t_saida_zp, t_saida_zs_rico, 0, l_zp,0, l_zs, 0, x3[e], 3)
-    tg_lista.append(Tg3)
+    Tg3 = tc.tg_3(t_saida_zp, t_saida_zs_rico, l_zs,l_zp, x3[e])
+    tg3_lista.append(Tg3)
 
 for f in range(len(x4)):
-    Tg4 = tc.tg(0, 0, t_saida_zs_rico,t_saida_zd, l_zp , 0, l_zs, l_zd, x4[f], 4)
-    tg_lista.append(Tg4)
+    Tg4 = tc.tg_4(t_saida_zs_rico, t_saida_zd, l_zd, x4[f], l_zp, l_zs)
+    tg4_lista.append(Tg4)
 
-# plt.scatter(x_total,tg_lista)
+
+
+# plt.figure(figsize = (15,10))
+# plt.plot(x1*1000, tg1_lista, label='Zona de Recirc.')
+# plt.plot(x2*1000, tg2_lista, label='Zona Primária')
+# plt.plot(x3*1000, tg3_lista, label='Zona Secundária')
+# plt.plot(x4*1000, tg4_lista, label='Zona de Diluição')
+# plt.grid(True, which='both')
+# plt.ylim([0, 2500])
+# plt.ylabel('Temperatura [K]')
+# plt.xlabel('Comprimento da Câmara de Combustão [mm]')
+# plt.title('Temperatura por Zona')
+# plt.legend()
 # plt.show()
 
 
-m_ponto_g1 = tc.mg_ponto(m_ponto_zp, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1)
-m_ponto_g2 = tc.mg_ponto(m_ponto_zp, m_ponto_g1, 0, 0, 0, 0, l_zr, l_zp, 0, 0, 0.01622,  2)
-m_ponto_g3 = tc.mg_ponto(0, 0, m_ponto_3, 0, m_ponto_g2 , 0, 0, l_zp, l_zs, 0, 0.02704,  3)
-m_ponto_g4 = tc.mg_ponto(0, 0, 0, m_ponto_g3, 0 , m_ponto_3, 0, l_zp, l_zs, l_zd, 0.05945,  4)
+mg_ponto_zr_lista = []
+mg_ponto_zp_lista = []
+mg_ponto_zs_lista = []
+mg_ponto_zd_lista = []
+mg_total = []
+for indice,valor in enumerate (range(len(x1))):
+    mg_ponto_zr = tc.mg1_ponto(m_ponto_zp)
+    mg_ponto_zr_lista.append(mg_ponto_zr)
 
-print(m_ponto_g1, m_ponto_g2, m_ponto_g3, m_ponto_g4)
+for indice, valor in enumerate (range(len(x2))):
+    mg_ponto_zp = tc.mg2_ponto(mg_ponto_zr_lista[indice], m_ponto_zp, x2[valor], l_zr,l_zp)
+    mg_ponto_zp_lista.append(mg_ponto_zp)
+
+
+for indice,valor in enumerate (range(len(x3))):
+    mg_ponto_zs = tc.mg3_ponto(mg_ponto_zp_lista[indice], m_ponto_zs, x3[valor], l_zp, l_zs)
+    mg_ponto_zs_lista.append(mg_ponto_zs)
+
+m_ponto_zd = 0.12329510485804025
+for indice,valor in enumerate (range(len(x3))):
+    mg_ponto_zd = tc.mg4_ponto(mg_ponto_zs_lista[indice], m_ponto_zd, x4[valor], l_zp, l_zs, l_zd)
+    mg_ponto_zd_lista.append(mg_ponto_zd)
+
+mg_total = mg_ponto_zr_lista + mg_ponto_zp_lista + mg_ponto_zs_lista + mg_ponto_zd_lista
+
+
+
+# plt.figure(figsize = (15,10))
+# plt.plot(x1*1000, mg_ponto_zr_lista, label='Zona de Recirc.')
+# plt.plot(x2*1000, mg_ponto_zp_lista, label='Zona Primária')
+# plt.plot(x3*1000, mg_ponto_zs_lista, label='Zona Secundária')
+# plt.plot(x4*1000, mg_ponto_zd_lista, label='Zona de Diluição')
+# plt.grid(True, which='both')
+# plt.ylabel('Temperatura [K]')
+# plt.xlabel('Comprimento da Câmara de Combustão [mm]')
+# plt.title('Temperatura por Zona')
+# plt.legend()
+# plt.show()
 
 
 #Eq. 50
 area_fenda = tc.area_fenda(d_ref, d_ft) # A altura da fenda é a soma das alturas de referencia e do tubo de chama 
 
 
-#Eq.51 (confirmar com o grupo se vamos colocar a eq 51 como sendo um array igual o de cima)
+#Eq. 51 (confirmar com o grupo se vamos colocar a eq 51 como sendo um array igual o de cima)
 #TODO | Pessoal essa eq 51, não deveria ser m_fenda ao inves de m_an ???
-m_an1 = m_ponto_3 - m_ponto_g1
-m_an2 = m_ponto_3 - m_ponto_g2
-m_an3 = m_ponto_3 - m_ponto_g3
-m_an4 = m_ponto_3 - m_ponto_g4
+# m_an1 = m_ponto_3 - m_ponto_g1
+# m_an2 = m_ponto_3 - m_ponto_g2
+# m_an3 = m_ponto_3 - m_ponto_g3
+# m_an4 = m_ponto_3 - m_ponto_g4
 
-A_an = 1
-m_ponto_fenda = tc.m_ponto_fenda_funcao(area_fenda, m_an1, A_an)
+A_an = np.pi/4 * ((0.192**2 ) - (0.1344 ** 2))
+A_an2 = a_ref_aerodinamica - a_ft
+# print(A_an)
+# print(A_an2)
+#Eq. 51
+# m_ponto_fenda2 = tc.m_ponto_fenda_funcao(area_fenda, m_an2, A_an)
+
+
+#Eq. 52
+# razao_rho_an_mi_an = tc.razao_rho_an_mi_an(m_ponto_fenda2, area_fenda)
+
+#Eq. 53
+# razao_rho_g_mi_an = tc.razao_rho_g_mi_an(m_ponto_g2, a_ft)
+
+#Eq. 54 
+
+#
+
 
 
 
@@ -188,19 +271,20 @@ m_ponto_h_zd = tc.m_ponto_h_zd_funcao(m_ponto_3,m_ponto_zp,m_ponto_zs,m_ponto_fe
 #Eq. 75 -78 Areas das orificios respectivos de cada zona (se trata de uma iteração)
 #Aqui temos que calcular A_orificios  de cada zona e isso é resultado de uma iteração entre as funcoes.
 #Pensei em fazer um while para cada zona, basicamente ao fim dessas iterações o valor arbritado no inicio c_d_h_inicial dve ser proximo ao c_d_h_final
-delta_P_1_2 = P2-P1
+delta_P_1_2 = P2 - P1
 c_d_h_inicial = 2 # Valor Abritario para inicio da iteração para encontrar um Cdh que convirja
 
-#TODO definir iteracao abaixo como funcao
-while round(c_d_h_inicial)==round(c_d_h_final):
-    A_h = tc.area_orificio(m_ponto_zp,T3,P3,c_d_h_inicial,delta_P_1_2) #TODO (bruno), verificar por que esse valor está dando complexo.
-    alpha = A_an / A_h #Renan: Acho que a relação está invertida 
-    #Abaixo considerei m_ponto_fenda como m_an1
-    m_ponto_an = m_ponto_3 - m_an1 - m_ponto_h_zp
-    beta = m_ponto_zp / m_ponto_an #Renan: precisamos variar o zp,zs,zd (cada zona i...)? ou só o de entrada zp?
-    mi = beta / alpha
-    k = tc.k_funcao(delta_P_1_2,mi,beta)
-    c_d_h_final = tc.c_d_h(k,delta_P_1_2,beta)
+#TODO #definir iteracao abaixo como funcao
+
+# while round(c_d_h_inicial)==round(c_d_h_final):
+#     A_h = tc.area_orificio(m_ponto_zp,T3,P3,c_d_h_inicial,delta_P_1_2) #TODO (bruno), verificar por que esse valor está dando complexo.
+#     alpha = A_an / A_h #Renan: Acho que a relação está invertida 
+#     #Abaixo considerei m_ponto_fenda como m_an1
+#     m_ponto_an = m_ponto_3 - m_an1 - m_ponto_h_zp
+#     beta = m_ponto_zp / m_ponto_an #Renan: precisamos variar o zp,zs,zd (cada zona i...)? ou só o de entrada zp?
+#     mi = beta / alpha
+#     k = tc.k_funcao(delta_P_1_2,mi,beta)
+#     c_d_h_final = tc.c_d_h(k,delta_P_1_2,beta)
 
 
 
@@ -208,13 +292,13 @@ while round(c_d_h_inicial)==round(c_d_h_final):
 #Essa equacao utiliza os mesmos parametros da equacao (77) a fim de formar o gráfico 3
 #delta=0.8 ou 0.6 de acordo com o canto do orificio, convexo ou vivo
 
-c_d_h=tc.cdh(k, 0.8, beta)
+# c_d_h=tc.cdh(k, 0.8, beta)
 
 
 #Eq. 79 - relacao area e diametro dos orificios
 #Dados da tabela 4, precisamos fazer a relação para cada fileira de furos internos e externos i=1,2,3...
 
-d_hi=tc.relacao_area_diam()
+# d_hi=tc.relacao_area_diam()
 
 #Equacao 80 ja comentada é apenas a soma dos valores da tabela 4 (numero de orificios)
 
