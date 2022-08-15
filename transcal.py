@@ -327,17 +327,22 @@ def razao_rho_g_mi_an(m_ponto_g, A_ft):
 
 #Equacao 54
 
-# def eta_r(m, mi_ar, mi_g, t, s):
-#     x_s = 75 #Metade do intervalo da tabela
-#     if(m > 0.5 and m <= 1.3 ):
-#         nr_calculo = ((1.11 * m )**0.65) * ((mi_ar/mi_g)**0.15) * (x_s**-0.2) * ((t/s)**-00.2)
-#     elif(m > 1.3 and m < 4):
-#         nr_calculo = 1.128  * ((mi_ar/mi_g)**0.15) * ((x_s)**-0.2) * ((t/s)**-00.2)
-#     return nr_calculo
-def eta_r(m, mi_ar, mi_g, t, s):
+def eta_r_sem_resfriamento(m, mi_ar, mi_g):
     x_s = 75 #Metade do intervalo da tabela
-    nr_calculo = ((1.11 * m )**0.65) * ((mi_ar/mi_g)**0.15) * (x_s**-0.2) * ((t/s)**-00.2)
+    if(m > 0.5 and m <= 1.3 ):
+        nr_calculo = ((1.11 * m )**0.65) * ((mi_ar/mi_g)**0.15) * 1 #(x_s**-0.2) * ((t/s)**-00.2)
+    elif(m > 1.3 and m < 4):
+        nr_calculo = 1.128  * ((mi_ar/mi_g)**0.15) * 1# ((x_s)**-0.2) * ((t/s)**-00.2)
     return nr_calculo
+
+def eta_r_com_resfriamento(m, mi_ar, mi_g, t, s):
+    x_s = 75 #Metade do intervalo da tabela
+    if(m > 0.5 and m <= 1.3 ):
+        nr_calculo = ((1.11 * m )**0.65) * ((mi_ar/mi_g)**0.15) * (x_s**-0.2) * ((t/s)**-00.2)
+    elif(m > 1.3 and m < 4):
+        nr_calculo = 1.128  * ((mi_ar/mi_g)**0.15) * ((x_s)**-0.2) * ((t/s)**-00.2)
+    return nr_calculo
+
     
 #Equacao 55
 
@@ -354,6 +359,10 @@ def mi_g_funcao(T_g):
 
 
 #Da equacao 57 ate 60 eu não entendi muito bem 
+
+#Eq. 57
+def t_g_w(t_g,n_r,T3):
+    return t_g - (n_r *(t_g - T3))
 
 
 #Equacao 60
@@ -395,8 +404,8 @@ def kg_funcao(T_g):
 
 #Equacao 67 - Mas ele usa uma outra relacao também que é a eq 68
 
-def reynolds(rho, u, x, mi):
-    Re = (rho * u * x)/mi 
+def reynolds(m_ponto_g, x,A_ft, mi):
+    Re = (m_ponto_g* x)/mi *A_ft
     return Re
 
 #Equacao 69 

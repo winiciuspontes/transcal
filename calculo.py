@@ -138,14 +138,6 @@ t_saida_zd = 1134
 
 #Tabela 7
 
-# Tg1 = t_media_zr 
-# print(Tg1)
-# Tg2 = tc.tg(t_media_zr, t_saida_zp, 0, 0, l_zp, l_zr, 0, 0, 0.01622, 2)
-# print(Tg2)
-# Tg3 = tc.tg(0, t_saida_zp, t_saida_zs_rico, 0, l_zp,0, l_zs, 0, 0.02704, 3)
-# print(Tg3)
-# Tg4 = tc.tg(0, 0, t_saida_zs_rico,t_saida_zd, l_zp , 0, l_zs, l_zd, 0.05945, 4)
-# print(Tg4)
 
 tg_lista = []
 
@@ -301,18 +293,76 @@ razao_rho_an_mi_an4 = tc.razao_rho_g_mi_an(m_ponto_g4, a_ft)
 
 #Eq. 55
 mi_ar = tc.mi_ar_funcao(T3)
+print("🐍 File: transcal/calculo.py | Line: 296 | undefined ~ mi_ar",mi_ar)
 mi_g= tc.mi_g_funcao(T3)
 
 #Eq. 54 
 t = ((1/2) * 10**-3)
 # n_r = tc.eta_r(0.5, mi_ar, mi_g_funcao, t, s)
-n_r = tc.eta_r(0.5, mi_ar, mi_g, t, s)
-print(n_r)
+n_r_sem_resfriamento = tc.eta_r_sem_resfriamento(0.6, mi_ar, mi_g)
+n_r_com_refriamento = tc.eta_r_com_resfriamento(0.6, mi_ar, mi_g,t,s)
+print(n_r_sem_resfriamento)
+
+
+tgw1_lista = []
+for c in range(len(x1)):
+    t_g_w_1 = tc.t_g_w(tg1_lista[c],n_r_sem_resfriamento,T3)
+    tgw1_lista.append(t_g_w_1)
+
+tgw2_lista = []
+for c in range(len(x1)):
+    t_g_w_2 = tc.t_g_w(tg2_lista[c],n_r_sem_resfriamento,T3)
+    tgw2_lista.append(t_g_w_2)
+
+
+tgw3_lista = []
+for c in range(len(x1)):
+    t_g_w_3 = tc.t_g_w(tg3_lista[c],n_r_sem_resfriamento,T3)
+    tgw3_lista.append(t_g_w_3)
+
+tgw4_lista = []
+for c in range(len(x1)):
+    t_g_w_4 = tc.t_g_w(tg4_lista[c],n_r_sem_resfriamento,T3)
+    tgw4_lista.append(t_g_w_4)
+    
+# print("🐍 File: transcal/calculo.py | Line: 323 | undefined ~ tgw1_lista",tgw1_lista)
+# print("🐍 File: transcal/calculo.py | Line: 323 | undefined ~ tgw2_lista",tgw2_lista)
+# print("🐍 File: transcal/calculo.py | Line: 323 | undefined ~ tgw2_lista",tgw3_lista)
+# print("🐍 File: transcal/calculo.py | Line: 323 | undefined ~ tgw4_lista",tgw4_lista)
+
+
+
+ka=tc.ka_funcao(T3)
+print("🐍 File: transcal/calculo.py | Line: 335 | undefined ~ ka",ka)
+
+d_an=tc.D_an_funcao(d_ref,d_ft)
+print("🐍 File: transcal/calculo.py | Line: 338 | undefined ~ d_an",a_an)
+
+rey1 = tc.reynolds(m_ponto_g1,l_zp,a_ft,mi_g)
+print("🐍 File: transcal/calculo.py | Line: 343 | undefined ~ l_zp",l_zp)
+print("🐍 File: transcal/calculo.py | Line: 343 | undefined ~ t_g_w_1",t_g_w_1)
+
+print("🐍 File: transcal/calculo.py | Line: 343 | undefined ~ Tg1",Tg1)
+print("🐍 File: transcal/calculo.py | Line: 343 | undefined ~ rey1",rey1)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 #Eq. 74
 m_ponto_h_zd = tc.m_ponto_h_zd_funcao(m_ponto_3,m_ponto_zp,m_ponto_zs,m_ponto_fenda_zd)
+
+
 
 #Eq. 75 -78 Areas das orificios respectivos de cada zona (se trata de uma iteração)
 #Aqui temos que calcular A_orificios  de cada zona e isso é resultado de uma iteração entre as funcoes.
