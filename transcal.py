@@ -148,7 +148,7 @@ def phi_rico_function(T3):
 #Equacao 34
 
 def area_ref_trans(A_ref):
-    A_ft = 0.56*A_ref
+    A_ft = 0.65*A_ref
     return A_ft
 
 #Tabela 6 
