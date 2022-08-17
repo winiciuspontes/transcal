@@ -8,7 +8,6 @@ import transcal as tc
 
 #CONSTANTES UTILIZADAS:
 k = 143.5
-#TODO | Para os valores m_ponto, ainda precisamos arbritar uma porcentagem referenta aperda se nao me engano
 m_ponto_3 = 0.243 
 m_ponto_comb = 0.00398 * 0.19 #Tirar dúvida sobre o m_comb (nao sabemos qual é o valor)
 m_ponto_zp = m_ponto_3  * 0.19
@@ -23,7 +22,7 @@ delta_P_3_4 = (354.420 - 333.155) * 1000
 delta = 0.8 # Adotei para o calculo o Orificio de adminissao de canto vivo, pag 70 do TG
 theta = 73 * (10**6) 
 d_int = 0.024 # Valor obtido da tabela 4
-m_ponto_h_zp = 0.254  #TODO | Valor provisorio para não dar erro no pyhton ate a eq 72 ser implementada
+m_ponto_h_zp = 0.254 
 razao_delta_P_3_4_q_ref = 20
 razao_delta_P_3_4_q_p3 = 0.06
 
@@ -147,8 +146,6 @@ x3 = np.linspace(l_zp, (l_zp + l_zs), 50)
 x4 = np.linspace((l_zp + l_zs), lcc, 50)
 
 
-# x_total = np.linspace(0, lcc, 120)
-
 x_total = np.linspace(0, lcc, 200)
 
 tg1_lista = []
@@ -176,90 +173,78 @@ for f in range(len(x4)):
 
 #Gráfico aparentemente certo - bateu com o TG do caio (grafico 4)
 
-# plt.figure(figsize = (15,10))
-# plt.plot(x1*1000, tg1_lista, label='Zona de Recirc.')
-# plt.plot(x2*1000, tg2_lista, label='Zona Primária')
-# plt.plot(x3*1000, tg3_lista, label='Zona Secundária')
-# plt.plot(x4*1000, tg4_lista, label='Zona de Diluição')
-# plt.grid(True, which='both')
-# plt.ylim([0, 2500])
-# plt.ylabel('Temperatura [K]')
-# plt.xlabel('Comprimento da Câmara de Combustão [mm]')
-# plt.title('Temperatura por Zona')
-# plt.legend()
-# plt.show()
+plt.figure(figsize = (15,10))
+plt.plot(x1*1000, tg1_lista, label='Zona de Recirc.')
+plt.plot(x2*1000, tg2_lista, label='Zona Primária')
+plt.plot(x3*1000, tg3_lista, label='Zona Secundária')
+plt.show()
 
 
 
-# mg_ponto_zr_lista = []
-# mg_ponto_zp_lista = []
-# mg_ponto_zs_lista = []
-# mg_ponto_zd_lista = []
+mg_ponto_zr_lista = []
+mg_ponto_zp_lista = []
+mg_ponto_zs_lista = []
+mg_ponto_zd_lista = []
 
-# man_1_lista = []
-# man_2_lista = []
-# man_3_lista = []
-# man_4_lista = []
-# mg_total = []
+man_1_lista = []
+man_2_lista = []
+man_3_lista = []
+man_4_lista = []
+mg_total = []
 
 m_ponto_g1 =  tc.mg1_ponto(m_ponto_zp)
 m_ponto_g2 =  tc.mg2_ponto(m_ponto_g1, m_ponto_zp, 0.014, l_zr,l_zp)
 m_ponto_g3 =  tc.mg3_ponto(m_ponto_g2, m_ponto_zs, 0.033, l_zp, l_zs)
 m_ponto_g4 =  tc.mg4_ponto(m_ponto_g3, m_ponto_zd, 0.043,l_zp, l_zs, l_zd)
 
-# for indice,valor in enumerate (range(len(x1))):
-#     mg_ponto_zr = tc.mg1_ponto(m_ponto_zp)
-#     man_1_calculo = m_ponto_3 - mg_ponto_zr
-#     mg_ponto_zr_lista.append(mg_ponto_zr)
-#     man_1_lista.append(man_1_calculo)
+for indice,valor in enumerate (range(len(x1))):
+    mg_ponto_zr = tc.mg1_ponto(m_ponto_zp)
+    man_1_calculo = m_ponto_3 - mg_ponto_zr
+    mg_ponto_zr_lista.append(mg_ponto_zr)
+    man_1_lista.append(man_1_calculo)
     
 
-# for indice, valor in enumerate (range(len(x2))):
-#     mg_ponto_zp = tc.mg2_ponto(mg_ponto_zr_lista[indice], m_ponto_zp, x2[valor], l_zr,l_zp)
-#     man_2_calculo = m_ponto_3 - mg_ponto_zp
-#     mg_ponto_zp_lista.append(mg_ponto_zp)
-#     man_2_lista.append(man_2_calculo)
+for indice, valor in enumerate (range(len(x2))):
+    mg_ponto_zp = tc.mg2_ponto(mg_ponto_zr_lista[indice], m_ponto_zp, x2[valor], l_zr,l_zp)
+    man_2_calculo = m_ponto_3 - mg_ponto_zp
+    mg_ponto_zp_lista.append(mg_ponto_zp)
+    man_2_lista.append(man_2_calculo)
 
 
-# for indice,valor in enumerate (range(len(x3))):
-#     mg_ponto_zs = tc.mg3_ponto(mg_ponto_zp_lista[indice], m_ponto_zs, x3[valor], l_zp, l_zs)
-#     man_3_calculo = m_ponto_3 - mg_ponto_zs
-#     mg_ponto_zs_lista.append(mg_ponto_zs)
-#     man_3_lista.append(man_3_calculo)
+for indice,valor in enumerate (range(len(x3))):
+    mg_ponto_zs = tc.mg3_ponto(mg_ponto_zp_lista[indice], m_ponto_zs, x3[valor], l_zp, l_zs)
+    man_3_calculo = m_ponto_3 - mg_ponto_zs
+    mg_ponto_zs_lista.append(mg_ponto_zs)
+    man_3_lista.append(man_3_calculo)
 
-# m_ponto_zd = 0.12329510485804025
-# for indice,valor in enumerate (range(len(x3))):
-#     mg_ponto_zd = tc.mg4_ponto(mg_ponto_zs_lista[indice], m_ponto_zd, x4[valor], l_zp, l_zs, l_zd)
-#     man_4_calculo = m_ponto_3 - mg_ponto_zd
-#     mg_ponto_zd_lista.append(mg_ponto_zd)
-#     man_4_lista.append(man_4_calculo)
+m_ponto_zd = 0.12329510485804025
+for indice,valor in enumerate (range(len(x3))):
+    mg_ponto_zd = tc.mg4_ponto(mg_ponto_zs_lista[indice], m_ponto_zd, x4[valor], l_zp, l_zs, l_zd)
+    man_4_calculo = m_ponto_3 - mg_ponto_zd
+    mg_ponto_zd_lista.append(mg_ponto_zd)
+    man_4_lista.append(man_4_calculo)
 
-# mg_total = mg_ponto_zr_lista + mg_ponto_zp_lista + mg_ponto_zs_lista + mg_ponto_zd_lista
-# m_an_total = man_1_lista + man_2_lista + man_3_lista + man_4_lista
+mg_total = mg_ponto_zr_lista + mg_ponto_zp_lista + mg_ponto_zs_lista + mg_ponto_zd_lista
+m_an_total = man_1_lista + man_2_lista + man_3_lista + man_4_lista
 
 
-# plt.plot(x_total,mg_total )
-# plt.show()
-# plt.figure(figsize = (15,10))
-# plt.plot(x1*1000, mg_ponto_zr_lista, label='Zona de Recirc.')
-# plt.plot(x2*1000, mg_ponto_zp_lista, label='Zona Primária')
-# plt.plot(x3*1000, mg_ponto_zs_lista, label='Zona Secundária')
-# plt.plot(x4*1000, mg_ponto_zd_lista, label='Zona de Diluição')
-# plt.grid(True, which='both')
-# plt.ylabel('Temperatura [K]')
-# plt.xlabel('Comprimento da Câmara de Combustão [mm]')
-# plt.title('Temperatura por Zona')
-# plt.legend()
-# plt.show()
+plt.plot(x_total,mg_total )
+plt.show()
+plt.figure(figsize = (15,10))
+plt.plot(x1*1000, mg_ponto_zr_lista)
+plt.plot(x2*1000, mg_ponto_zp_lista)
+plt.plot(x3*1000, mg_ponto_zs_lista)
+plt.plot(x4*1000, mg_ponto_zd_lista)
+
+plt.legend()
+plt.show()
 
 
 #Eq. 50
 s = 0.415
 area_fenda = tc.area_fenda(d_ref, d_ft, s) # A altura da fenda é a soma das alturas de referencia e do tubo de chama 
-# print("Valor de area_fenda", area_fenda)
 
 #Eq. 51 (confirmar com o grupo se vamos colocar a eq 51 como sendo um array igual o de cima)
-#TODO | Pessoal essa eq 51, não deveria ser m_fenda ao inves de m_an ???
 
 a_an = tc.A_an_int(d_int, d_ref, d_ft)
 m_an1 = m_ponto_3 - m_ponto_g1
@@ -268,9 +253,6 @@ m_an3 = m_ponto_3 - m_ponto_g3
 m_an4 = m_ponto_3 - m_ponto_g4
 
 
-# A_an2 = a_ref_aerodinamica - a_ft
-# print(A_an)
-# print(A_an2)
 #Eq. 51
 m_ponto_fenda1 = tc.m_ponto_fenda_funcao(area_fenda, m_an1, a_an)
 m_ponto_fenda2 = tc.m_ponto_fenda_funcao(area_fenda, m_an2, a_an)
@@ -293,7 +275,6 @@ razao_rho_an_mi_an4 = tc.razao_rho_g_mi_an(m_ponto_g4, a_ft)
 
 #Eq. 55
 mi_ar = tc.mi_ar_funcao(T3)
-print("🐍 File: transcal/calculo.py | Line: 296 | undefined ~ mi_ar",mi_ar)
 mi_g= tc.mi_g_funcao(T3)
 
 #Eq. 54 
@@ -324,38 +305,6 @@ tgw4_lista = []
 for c in range(len(x1)):
     t_g_w_4 = tc.t_g_w(tg4_lista[c],n_r_sem_resfriamento,T3)
     tgw4_lista.append(t_g_w_4)
-    
-# print("🐍 File: transcal/calculo.py | Line: 323 | undefined ~ tgw1_lista",tgw1_lista)
-# print("🐍 File: transcal/calculo.py | Line: 323 | undefined ~ tgw2_lista",tgw2_lista)
-# print("🐍 File: transcal/calculo.py | Line: 323 | undefined ~ tgw2_lista",tgw3_lista)
-# print("🐍 File: transcal/calculo.py | Line: 323 | undefined ~ tgw4_lista",tgw4_lista)
-
-
-
-ka=tc.ka_funcao(T3)
-print("🐍 File: transcal/calculo.py | Line: 335 | undefined ~ ka",ka)
-
-d_an=tc.D_an_funcao(d_ref,d_ft)
-print("🐍 File: transcal/calculo.py | Line: 338 | undefined ~ d_an",a_an)
-
-rey1 = tc.reynolds(m_ponto_g1,l_zp,a_ft,mi_g)
-print("🐍 File: transcal/calculo.py | Line: 343 | undefined ~ l_zp",l_zp)
-print("🐍 File: transcal/calculo.py | Line: 343 | undefined ~ t_g_w_1",t_g_w_1)
-
-print("🐍 File: transcal/calculo.py | Line: 343 | undefined ~ Tg1",Tg1)
-print("🐍 File: transcal/calculo.py | Line: 343 | undefined ~ rey1",rey1)
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -370,31 +319,30 @@ m_ponto_h_zd = tc.m_ponto_h_zd_funcao(m_ponto_3,m_ponto_zp,m_ponto_zs,m_ponto_fe
 delta_P_1_2 = P2 - P1
 c_d_h_inicial = 2 # Valor Abritario para inicio da iteração para encontrar um Cdh que convirja
 
-#TODO #definir iteracao abaixo como funcao
 
-# while round(c_d_h_inicial)==round(c_d_h_final):
-#     A_h = tc.area_orificio(m_ponto_zp,T3,P3,c_d_h_inicial,delta_P_1_2) #TODO (bruno), verificar por que esse valor está dando complexo.
-#     alpha = A_an / A_h #Renan: Acho que a relação está invertida 
-#     #Abaixo considerei m_ponto_fenda como m_an1
-#     m_ponto_an = m_ponto_3 - m_an1 - m_ponto_h_zp
-#     beta = m_ponto_zp / m_ponto_an #Renan: precisamos variar o zp,zs,zd (cada zona i...)? ou só o de entrada zp?
-#     mi = beta / alpha
-#     k = tc.k_funcao(delta_P_1_2,mi,beta)
-#     c_d_h_final = tc.c_d_h(k,delta_P_1_2,beta)
+while round(c_d_h_inicial)!=round(c_d_h_final):
+    A_h = tc.area_orificio(m_ponto_zp,T3,P3,c_d_h_inicial,delta_P_1_2)
+    alpha = A_an / A_h #Renan: Acho que a relação está invertida 
+    #Abaixo considerei m_ponto_fenda como m_an1
+    m_ponto_an = m_ponto_3 - m_an1 - m_ponto_h_zp
+    beta = m_ponto_zp / m_ponto_an #Renan: precisamos variar o zp,zs,zd (cada zona i...)? ou só o de entrada zp?
+    mi = beta / alpha
+    k = tc.k_funcao(delta_P_1_2,mi,beta)
+    c_d_h_final = tc.c_d_h(k,delta_P_1_2,beta)
 
 
 
 #Eq. 78 - Coeficiente de descarga
 #Essa equacao utiliza os mesmos parametros da equacao (77) a fim de formar o gráfico 3
-#delta=0.8 ou 0.6 de acordo com o canto do orificio, convexo ou vivo
+delta=0.8 # ou 0.6 de acordo com o canto do orificio, convexo ou vivo
 
-# c_d_h=tc.cdh(k, 0.8, beta)
+c_d_h=tc.cdh(k, 0.8, beta)
 
 
 #Eq. 79 - relacao area e diametro dos orificios
 #Dados da tabela 4, precisamos fazer a relação para cada fileira de furos internos e externos i=1,2,3...
 
-# d_hi=tc.relacao_area_diam()
+d_hi=tc.relacao_area_diam()
 
 #Equacao 80 ja comentada é apenas a soma dos valores da tabela 4 (numero de orificios)
 
