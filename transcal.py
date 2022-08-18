@@ -100,8 +100,8 @@ def perfil_radial_temp(T_mr, T4, T3):
 def area_tranferencia_aerodinamica(k, m_ponto_3, T3, P3, razao_delta_P_3_4_q_ref, razao_delta_P_3_4_q_p3):
     camara_analunar = True
     if(camara_analunar):
-        razao_delta_P_3_4_q_ref = 20/0.06 # Valor retirado da Tabela 5 
-        area_transf =  ( (k * (((m_ponto_3 * (T3**0.5) )/(P3))**2  * (razao_delta_P_3_4_q_ref/ razao_delta_P_3_4_q_p3 )) ) ** 0.5 ) 
+         # Valor retirado da Tabela 5 
+        area_transf =  (k * (((m_ponto_3 * (T3**0.5))/P3) ** 2) * razao_delta_P_3_4_q_ref/razao_delta_P_3_4_q_p3) ** 0.5
     return area_transf
 
 
@@ -148,7 +148,7 @@ def phi_rico_function(T3):
 #Equacao 34
 
 def area_ref_trans(A_ref):
-    A_ft = 0.65*A_ref
+    A_ft = 0.56 * A_ref
     return A_ft
 
 #Tabela 6 
@@ -170,14 +170,14 @@ def comprimento_camara_combustao(L_zp, L_zs, L_zd):
 
 #Equacao 36 - No entanto, talvez tenha valor fixo de 0.8
 def quant_ar_zona_secundaria(phi_global,rico,phi_Zs):
-  quanti_relativa_ar = (phi_global+rico)/phi_Zs
+  quanti_relativa_ar = (phi_global + rico)/phi_Zs
   return quanti_relativa_ar
 
 
 #Equacao 37 
 
 def porcentagem_ar_resfriamento(T3, m_ponto_3):
-    m_ponto_arref = ((0.1*T3 )- 30) * m_ponto_3
+    m_ponto_arref = ( (0.1 * T3 )- 30 ) * m_ponto_3
     return m_ponto_arref
 
 
@@ -518,8 +518,8 @@ def  A_an_ext(D_int,D_ref,D_ft):
     return (np.pi/4)*(pow((D_int+(2*D_ref)),2)-(pow((D_int+D_ref+D_ft),2)))
 
 # Equacao 87
-def  A_an_int(D_int,D_ref,D_ft):
-    return (np.pi/4)*(pow((D_int+D_ref-D_ft),2))-(pow(D_int,2))
+def  A_an_int(D_int, D_ref, D_ft):
+    return (np.pi/4) * (((D_int+D_ref-D_ft)**2) - (D_int**2))
 
 
 #Equacao 88
