@@ -151,19 +151,10 @@ for f in range(len(x4)):
     tg4_lista.append(Tg4)
 
 tg_total = tg1_lista + tg2_lista + tg3_lista + tg4_lista
-x_total_sem_resf =tc.x_total_sem_resf
-tg_total_sem_resf=tc.tg_total_sem_resf
-
-plt.title('Temperatura Gases e Temperatura parede sem resfriamento')
-plt.plot(x_total_sem_resf,tg_total_sem_resf,'y')
-plt.plot(x_total, tg_total)
-plt.ylabel('Temperatura (K)')
-plt.xlabel('Comprimento da camara (mm)')
-plt.grid()
-plt.show()
-plt.ylabel('Tg')
-plt.xlabel('x [mm]')
-
+# plt.plot(x_total, tg_total)
+# plt.show()
+# plt.ylabel('Tg')
+# plt.xlabel('x [mm]')
 mg1_ponto = []
 mg2_ponto = []
 mg3_ponto = []
@@ -173,6 +164,9 @@ man_1_lista = []
 man_2_lista = []
 man_3_lista = []
 man_4_lista = []
+
+
+
 
 
 for indice, valor in enumerate(x1):
@@ -204,75 +198,79 @@ for indice, valor in enumerate(x4):
 
 mg_total = mg1_ponto + mg2_ponto + mg3_ponto + mg4_ponto 
 man_total = man_1_lista + man_2_lista + man_3_lista + man_4_lista 
-
-plt.title('Fluxo de massas')
-plt.ylabel('Vazão mássica')
-plt.xlabel('Comprimento da camara (mm)')
-plt.grid()
-plt.plot(x_total, mg_total)
-plt.show()
+# plt.plot(x_total, mg_total)
+# plt.show()
 
 
 #########################################################################################################################
 
 
 #Posição das Fendas Escolhidas
-posicao_fenda_1 = 29*1e-3
+posicionamentoX_fendas= 16*1e-3
+idx = np.argmin(np.abs(x_total-posicionamentoX_fendas))
+vazaoMassicaGases = mg_total[idx]
+vazaoMassicaAnular = man_total[idx]
+temperaturaGases = tg_total[idx]
+
+
+posFenda1 = 21*1e-3
 x_t = np.linspace(1e-4, lcc, 100)
-id_1 = np.argmin(np.abs(x_t-posicao_fenda_1))
-m_ponto_gases_fenda_1 = mg_total[id_1] 
-m_ponto_anular_fenda_1 = man_total[id_1]
-t_gases_fenda_1 = tg_total[id_1]
+id_1 = np.argmin(np.abs(x_t-posFenda1))
+vazaoMassicaGases_1 = mg_total[id_1] 
+vazaoMassicaAnular_1 = man_total[id_1]
+temperaturaGases_1 = tg_total[id_1]
 
 #Posição da Fenda
 
 # Área da Fenda 1
-s_1 = 0.001
-t_1 = 0.002
-a_fenda_1 = 2*np.pi*s_1*(d_ref + d_ft)
+s_1 = 0.001  # altura da fenda [m]
+t_1 = 0.002   #espessura da fenda [m]
+A_fenda_1 = 2*np.pi*s_1*(d_ref + d_ft)
 A_an = a_ref-a_ft 
-m_fenda_1 = m_ponto_anular_fenda_1*(a_fenda_1/A_an)
+# Vazão Mássica de Ar que Entra em cada Fenda
+m_fenda_1 = vazaoMassicaAnular_1*(A_fenda_1/A_an)
 
 index = 0
 for i in x_t:
-    if i> posicao_fenda_1:
+    if i> posFenda1:
         mg_total[index] = mg_total[index] + m_fenda_1
         man_total[index] = man_total[index] - m_fenda_1
     index+=1
 
 #Fenda 2
-posicao_fenda_2= 50*1e-3
-id_2 = np.argmin(np.abs(x_t-posicao_fenda_2))
-m_ponto_gases_fenda_2 = mg_total[id_2]
-m_ponto_anular_fenda_2 = man_total[id_2]
-t_gases_fenda_2  = tg_total[id_2]
+posFenda2= 29*1e-3
+id_2 = np.argmin(np.abs(x_t-posFenda2))
+vazaoMassicaGases_2 = mg_total[id_2]
+vazaoMassicaAnular_2 = man_total[id_2]
+temperaturaGases_2  = tg_total[id_2]
 
 # Área da Fenda 2
-s_2 = 0.001
-t_2 = 0.002 
+s_2 = 0.001  # altura da fenda [m]
+t_2 = 0.002    #espessura da fenda [m]
 A_fenda_2 = 2*np.pi*s_2*(d_ref + d_ref)
-m_fenda_2 = m_ponto_anular_fenda_2*(A_fenda_2/A_an)
+# Vazão Mássica de Ar que Entra em cada Fenda
+m_fenda_2 = vazaoMassicaAnular_2*(A_fenda_2/A_an)
 
 
 index = 0
 for i in x_t:
-    if i> posicao_fenda_2:
+    if i> posFenda2:
         mg_total[index] = mg_total[index] + m_fenda_2
         man_total[index] = man_total[index] - m_fenda_2
     index+=1
 
 # Eficiência do resfriamento Fenda 1
-pu_an_1 = m_ponto_anular_fenda_1/A_an 
-pu_g_1 = m_ponto_gases_fenda_1/a_ft 
-visc_ar = (0.03863 + 0.00749*T3 - (5.8564*(10**(-6))*(T3**2)) + (2.7769*(10**(-9))*(T3**3)) - (4.600774*(10**(-13))*(T3**4)))*(10**(-5)) 
-visc_g_1 = (0.03863 + 0.00749*t_gases_fenda_1-5.8564*(10**-6)*(t_gases_fenda_1**2) + 2.7769*(10**-9)*(t_gases_fenda_1**3) - 4.600774*(10**-13)*(t_gases_fenda_1**4))*(10**-5) #viscosidade dinamica do gás no interior do tubo de chama
+pu_an_1 = vazaoMassicaAnular_1/A_an # produto entre a densidade e a velocidade do ar que atravessa a área anular
+pu_g_1 = vazaoMassicaGases_1/a_ft # produto entre a densidade e velocidade do gás no tubo de chama (na região onde está posicionada a fenda)
+visc_ar = (0.03863 + 0.00749*T3 - (5.8564*(10**(-6))*(T3**2)) + (2.7769*(10**(-9))*(T3**3)) - (4.600774*(10**(-13))*(T3**4)))*(10**(-5)) #viscosidade dinamica do ar
+visc_g_1 = (0.03863 + 0.00749*temperaturaGases_1-5.8564*(10**-6)*(temperaturaGases_1**2) + 2.7769*(10**-9)*(temperaturaGases_1**3) - 4.600774*(10**-13)*(temperaturaGases_1**4))*(10**-5) #viscosidade dinamica do gás no interior do tubo de chama
 razao_m_1 = pu_an_1/pu_g_1
 print(f'Razao m fenda 1: {razao_m_1}')
 
 # Eficiência do resfriamento Fenda 2
-pu_an_2 = m_ponto_anular_fenda_2/A_an 
-pu_g_2 = m_ponto_gases_fenda_2/a_ft 
-visc_g_2 =(0.03863 + 0.00749*t_gases_fenda_2-5.8564*(10**-6)*(t_gases_fenda_2**2) + 2.7769*(10**-9)*(t_gases_fenda_2**3) - 4.600774*(10**-13)*(t_gases_fenda_2**4))*(10**-5) #viscosidade dinamica do gás no interior do tubo de chama
+pu_an_2 = vazaoMassicaAnular_2/A_an # produto entre a densidade e a velocidade do ar que atravessa a área anular
+pu_g_2 = vazaoMassicaGases_2/a_ft # produto entre a densidade e velocidade do gás no tubo de chama (na região onde está posicionada a fenda)
+visc_g_2 =(0.03863 + 0.00749*temperaturaGases_2-5.8564*(10**-6)*(temperaturaGases_2**2) + 2.7769*(10**-9)*(temperaturaGases_2**3) - 4.600774*(10**-13)*(temperaturaGases_2**4))*(10**-5) #viscosidade dinamica do gás no interior do tubo de chama
 razao_m_2 = pu_an_2/pu_g_2
 #razao_m_2 = 0.52
 print(f'Razao m fenda 2: {razao_m_2}')
@@ -281,38 +279,38 @@ print(f'Razao m fenda 2: {razao_m_2}')
 
 #Temperatura dos gases proximo da parede
 
-# Cálculo da Temperatura na Parede ao Longo do Tubo de Chama 
+####### Cálculo da Temperatura na Parede ao Longo do Tubo de Chama 
 index = 0
-vetor_temp = []
-graph_eff = []
+vetorTemp = []
+graphEff = []
 
 for posX in x_t:
-	m_ponto_gas = mg_total[index] 
-	m_ponto_an = man_total[index]
-	t_gases = tg_total[index]
+	mdotgas = mg_total[index] 
+	mdotan = man_total[index]
+	tgases = tg_total[index]
 
-	if posX < posicao_fenda_1:
-		visc_g =(0.03863 + 0.00749*t_gases-5.8564*(10**-6)*(t_gases**2) + 2.7769*(10**-9)*(t_gases**3) - 4.600774*(10**-13)*(t_gases**4))*(10**-5) 
+	if posX < posFenda1:
+		visc_g =(0.03863 + 0.00749*tgases-5.8564*(10**-6)*(tgases**2) + 2.7769*(10**-9)*(tgases**3) - 4.600774*(10**-13)*(tgases**4))*(10**-5) 
 		posXEff = posX
 		nr = 0
-	elif posX >= posicao_fenda_1 and posX < posicao_fenda_2:
-		visc_g = visc_g_1 
+	elif posX >= posFenda1 and posX < posFenda2:
+		visc_g = visc_g_1  	#viscosidade dinamica do gás no interior do tubo de chama
 		posXEff = posX
-		posRel = posX - posicao_fenda_1 + 0.001
+		posRel = posX - posFenda1 + 0.001
 		razao_m = razao_m_1
 
 		if razao_m>0.5 and razao_m<=1.3:
 			nr = 1.10*(razao_m**0.65)*((visc_ar/visc_g)**0.15)*((posRel/s_1)**(-0.2))*((t_1/s_1)**(-0.2)) 
-		elif razao_m>1.3 and razao_m<=4:
+		elif razao_m>1.3 and razao_m<=4:  #Editei aqui
 			nr = 1.28*((visc_ar/visc_g)**0.15)*((posRel/s_1)**(-0.2))*((t_1/s_1)**(-0.2))
 		else:
 			nr = 0
-			print("Favor verificar intervalo.")
+			
 	else:
-		visc_g = visc_g_2 
+		visc_g = visc_g_2  	#viscosidade dinamica do gás no interior do tubo de chama
 		posXEff = posX
 		razao_m = razao_m_2
-		posRel = posX - posicao_fenda_2 + 0.001
+		posRel = posX - posFenda2 + 0.001
 
 		if razao_m>0.5 and razao_m<=1.3:
 			nr = 1.10*(razao_m**0.65)*((visc_ar/visc_g)**0.15)*((posRel/s_2)**(-0.2))*((t_2/s_2)**(-0.2)) 
@@ -320,86 +318,97 @@ for posX in x_t:
 			nr = 1.28*((visc_ar/visc_g)**0.15)*((posRel/s_2)**(-0.2))*((t_2/s_2)**(-0.2))
 		else:
 			nr = 0
-			print("Favor verificar intervalo.")
+			
 
-	graph_eff.append(nr)
-	Tg_w = t_gases - nr * (t_gases - T3)
+	graphEff.append(nr)
+	Tg_w = tgases - nr * (tgases - T3)
 
 	#TRANSFERENCIA DE CALOR NA PAREDE
+	#Resolução será feita utilizando a biblioteca Sympy do Python
 	# RADIAÇÃO
-	#T_w1 Temperatura na superficie interna
-	#T_w2 Temperatura na superficie externa
+	#T_w1 Temperatura na superficie interna tubo de chama
+	#T_w2 Temperatura na superficie externa tubo de chama
 	T_w1, T_w2 = sp.symbols('T_w1,T_w2')
 
-	k_w = 26 #[W/m.K] condutividade térmica
-	t_w = 0.0005 
-	sigma = 5.67*10**(-8) #Stefan-Boltzmann
-	e_w = 0.4
-	q = 0.00398/0.243
-	l_b_int = d_ft 
-	l_b_ext = 1.2 * d_ft 
-	e_g_int = 1 - np.exp(-0.290*P3*(q*l_b_int)**0.5*t_gases**(-1.5)) 
-	e_g_ext = 1 - np.exp(-0.290*P3*(q*l_b_ext)**0.5*t_gases**(-1.5))
+	k_w = 26 #[W/m.K] condutividade térmica - página 79
+	t_w = 0.0005 #liner wall thickness m - retirado do GasTurb pag 325 VALIDAR ESSE VALOR (atualizado do desenho do TG)
+	sigma = 5.67*10**(-8)   #constante de Stefan-Boltzmann
+	e_w = 0.4 #emissividade do material - página 79 
+	q = 0.00398/0.243 #VERIFICAR COM O PROFESSOR????
+	l_b_int = d_ft   #comprimento característico do gás - interno
+	l_b_ext = 1.2 * d_ft #comprimento característico do gás - externo
+	e_g_int = 1 - np.exp(-0.290*P3*(q*l_b_int)**0.5*tgases**(-1.5)) #emissividade do gás 
+	e_g_ext = 1 - np.exp(-0.290*P3*(q*l_b_ext)**0.5*tgases**(-1.5)) #emissividade do gás 
 	Z = 0.4 #para alumínio - página 66 do TG
 
-	R_1 = 0.5*sigma*(1+e_w)*e_g_int*(t_gases**1.5)*((t_gases**2.5)-(T_w1**2.5)) 
-	R_2 = Z*sigma*(T_w2**4 - T3**4)       
+	#fluxo de calor por radiação do gás (devo usar e_g_int ou e_g_ext)
+	R_1 = 0.5*sigma*(1+e_w)*e_g_int*(tgases**1.5)*((tgases**2.5)-(T_w1**2.5)) 
+	R_2 = Z*sigma*(T_w2**4 - T3**4)  #fluxo de calor por radiação da parede do tubo de chama         
 
-	#K1-2 :
-	K_1_2 = (k_w/t_w)*(T_w1 - T_w2) 
+	#O fluxo de calor através da parede K1-2 é dado por:
+	K_1_2 = (k_w/t_w)*(T_w1 - T_w2) #Fluxo de calor através da parede
 
 	#CONVECÇÃO
-	k_g = 5.92657*10**(-4)+9.80957*(10**(-5))*t_gases-4.89398*(10**(-8))*(t_gases**2)+1.5011410*(10**(-11))*(t_gases**3)
-	Re_x = (m_ponto_gas*posXEff)/(a_ft*visc_g)  
+	#condutividade térmica do gás, função de sua temperatura
+	k_g = 5.92657*10**(-4)+9.80957*(10**(-5))*tgases-4.89398*(10**(-8))*(tgases**2)+1.5011410*(10**(-11))*(tgases**3)
+	#Número de Reynolds na posição x
+	Re_x = (mdotgas*posXEff)/(a_ft*visc_g)  
 
-	if posX <= posicao_fenda_1:
+	if posX <= posFenda1:
 		D_L = 4*a_ft/d_ft
-		C_1 = 0.017*(k_g/(D_L**0.2))*((m_ponto_gas/(a_ft*visc_g))**0.8)*(t_gases-T_w1)
-	elif posX >= posicao_fenda_1 and posX < posicao_fenda_2:
+		C_1 = 0.017*(k_g/(D_L**0.2))*((mdotgas/(a_ft*visc_g))**0.8)*(tgases-T_w1)
+	elif posX >= posFenda1 and posX < posFenda2:
 		if razao_m > 0.5 and razao_m <= 1.3:
 			C_1 = 0.069*(k_g/posXEff)*(Re_x**0.7)*(Tg_w-T_w1)
 		elif razao_m > 1.3 and razao_m < 4.0:
+			#Essa equação estava errada no trabalho do rapaz.
 			C_1 = 0.10*(k_g/posXEff)*Re_x**0.8*(posXEff/s_1)**(-0.36)*(Tg_w-T_w1)
 	else:
 		if razao_m > 0.5 and razao_m <= 1.3:
 			C_1 = 0.069*(k_g/posXEff)*(Re_x**0.7)*(Tg_w-T_w1)
 		elif razao_m > 1.3 and razao_m < 4.0:
+			#Essa equação estava errada no trabalho do rapaz.
 			C_1 = 0.10*(k_g/posXEff)*Re_x**0.8*(posXEff/s_2)**(-0.36)*(Tg_w-T_w1)
 		
 	D_an = d_ref - d_ft
 	k_a = 5.92657*(10**(-4))+9.80957*(10**(-5))*T3-4.89398*(10**(-8))*(T3**2)+1.5011410*(10**(-11))*(T3**3) 
-	C_2 = 0.020*(k_a/(D_an**0.2))*((m_ponto_an/(A_an*visc_ar))**0.8)*(T_w2 - T3) 
+	#fluxo de calor por convecção da parede externa do tubo de chama
+	C_2 = 0.020*(k_a/(D_an**0.2))*((mdotan/(A_an*visc_ar))**0.8)*(T_w2 - T3) 
 
 	eq1 = sp.Eq(R_1+C_1-R_2-C_2,0)
 	eq2 = sp.Eq(R_1+C_1-K_1_2,0)
-	solver = sp.nsolve((eq1,eq2),(T_w1, T_w2), (1500,800))
-	tfinal = max(solver[0],solver[1])
-	vetor_temp.append(tfinal)
-	print(rf"Interação {index} T_w1 = {round(solver[0],2):,.2f}, T_w2 = {round(solver[1],2):,.2f}")
+	sol = sp.nsolve((eq1,eq2),(T_w1, T_w2), (1100,700))
+	tfinal = min(sol[0],sol[1])
+	vetorTemp.append(tfinal)
+	print(rf"solucao {index} para T_w1 = {round(sol[0],2):,.2f}, T_w2 = {round(sol[1],2):,.2f}")
 	index+=1
 
 lcc = tc.comprimento_camara_combustao(l_zp,l_zs,l_zd)
 
-
-
 plt.figure(4,figsize=(12, 7), dpi=80)
-plt.plot(x_t*(10**3),vetor_temp,'b',label = 'Temperatura máxima na superfície')
-plt.hlines(800,0,65,linestyles='--', label='Limite do Material', color='g')
-plt.title('Temperatura da parede ao longo do tubo de chama')
+plt.plot(x_t*(10**3),vetorTemp,'b',label = 'Temperatura máxima na superfície do tubo de chama.')
+plt.plot(x_t*(10**3), tg_total, 'r', label = 'Temperatura dos gases no tubo de chama.')
+
+
+plt.yticks(np.arange(0, 2600, 100))
+plt.xticks(np.arange(0, 70, 5))
+plt.hlines(950,0,65,linestyles='--', label='Limite do Material', color='r')
+plt.title('Temperatura dos Gases e das Paredes ao Longo do Tubo de Chama')
 plt.ylabel('Temperatura (K)')
-plt.xlabel('Comprimento da camara (mm)')
-plt.ylim(400,1000)
-plt.xlim(0,60)
+plt.xlabel('Distância em relação a face (mm)')
 plt.grid()
 plt.show()
 
-plt.plot(x_t*(10**3),graph_eff,'b',label = 'Eficiência')
-plt.vlines(posicao_fenda_1*1e3,0,1,colors='k', linestyles='--')
-plt.vlines(posicao_fenda_2*1e3,0,1,colors='y', linestyles='--')
-plt.title('Eficiência do resfriamento')
+plt.plot(x_t*(10**3),graphEff,'b',label = 'Eficiência de Resfriamento')
+plt.vlines(posFenda1*1e3,0,1,colors='k', linestyles='--', label='Posição da Fenda 1')
+plt.vlines(posFenda2*1e3,0,1,colors='y', linestyles='--', label='Posição da Fenda 2')
+plt.title('Eficiência do Resfriamento ao Longo da Parede do Tubo de Chama')
 plt.ylabel('Eficiência')
-plt.xlabel('Comprimento da camara (mm)')
+plt.xlabel('Distância em relação a face (mm)')
+plt.yticks(np.arange(0, 1.1,0.05))
+plt.xticks(np.arange(0, 70, 5))
 plt.grid()
+plt.legend()
 plt.show()
 
 
